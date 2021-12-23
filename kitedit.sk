@@ -1,0 +1,432 @@
+options:
+	prefix:&8[&1&lKitEdit&r&8]&f
+	
+	kit_editor:&8[&1&lKitEditor&r&8]&f
+
+	kit_saveconfirm:&8[&1&lSaveKit&r&8]&f
+
+	kit_deleteconfirm:&8[&1&lDeleteKit&r&8]&f
+
+	kit_multisave:&r&lSave Kit
+	
+	kit_editor_back:&rBack
+	
+	kit_editor_replace:&rRelpace Item
+	
+	kit_editor_crystal:&r&lCrystal
+	
+	kit_editor_gapple:&r&lFood
+	
+	kit_editor_totem:&r&lTotem
+	
+	kit_editor_bottle:&r&lXPBottle
+	
+	kit_editor_piston:&r&lPiston
+	
+	kit_editor_armor:&r&lArmor
+
+	kit_editor_arrow:&r&lArrow
+	
+	kit_editor_tool:&r&lTool
+
+	kit_editor_block:&r&lBlock
+
+	kit_editor_potion:&r&lPotion
+
+	kit_editor_items:&r&lItems
+	
+	gui_kit_list:&r&lKit list
+
+	gui_kit_edit:&r&lEdit Kit
+	
+	gui_kit_get:&r&lGet Kit
+
+	gui_kit_save:&r&lSave Kit
+
+	gui_kit_old_load:&r&lLoad Old Kit
+
+	gui_kit_load:&r&lLoad Kit
+
+command /kitedit [<text>] [<text>]:
+	trigger:
+		if arg-1 is set:
+			if arg-1 is "saveconfirm":
+				close player's inventory
+				wait 1 tick
+				if {kitedit_temp_%player%_count} is not set:
+					open chest inventory with 1 rows named "{@kit_saveconfirm}" to player
+					format slot 3 of player with lime wool named "&r&a&lOK" to run [make player execute command "kitcreate multisave"]
+					format slot 5 of player with red wool named "&r&c&lNG" to run [make player execute command "kitedit"]
+				else:
+					open chest inventory with 1 rows named "{@kit_saveconfirm}:&lKit%{kitedit_temp_%player%_count}%" to player
+					format slot 3 of player with lime wool named "&r&a&lOK" to run [make player execute command "kitcreate multisave %{kitedit_temp_%player%_count}%"]
+					format slot 5 of player with red wool named "&r&c&lNG" to run [make player execute command "kitedit"]
+
+			else if arg-1 is "deleteconfirm":
+				if {kitedit_temp_%player%_count} is set:
+					close player's inventory
+					wait 1 tick
+					open chest inventory with 1 rows named "{@kit_deleteconfirm}:&lKit%{kitedit_temp_%player%_count}%" to player
+					format slot 3 of player with lime wool named "&r&l&aOK" to run [make player execute command "kitcreate clear %{kitedit_temp_%player%_count}%"]
+					format slot 5 of player with red wool named "&r&l&cNG" to run [make player execute command "kitedit"]
+				else:
+					send "{@prefix}エラー"
+
+		else:
+			close player's inventory
+			wait 1 tick
+			open chest inventory with 1 rows named "{@prefix}" to player
+			set slot 0 of player's current inventory to anvil named "{@gui_kit_edit}"
+			if {kitcreate.kit.%player%} = 2:
+				set slot 4 of player's current inventory to diamond sword named "{@gui_kit_list}"
+			else if {kitcreate.kit.%player%} = 1:
+				format slot 3 of player with diamond sword named "{@gui_kit_save}" with lore "&r&l&4kitをロードしてから保存してください！" to run [make player execute command "kitcreate multisave"]
+				format slot 5 of player with diamond sword named "{@gui_kit_old_load}" with lore "&r&l&4kitの保存形式が古い物です。新しいkitの保存形式の使用を推奨します。" to run [make player execute command "kitcreate load"]
+			else:
+				set slot 4 of player's current inventory to diamond sword named "&r&lsaveKit"
+				#set slot 5 of player's current inventory to diamond sword named "&r&lまずkitを保存しましょう"
+			#set slot 7 of player's current inventory to anvil named "{@kit_multisave}"
+			set slot 8 of player's current inventory to diamond sword named "{@gui_kit_get}"					
+
+on inventory click:
+	if name of clicked inventory is "{@prefix}":
+		if event-item is diamond sword named "{@gui_kit_get}":
+			make player execute command "kit"
+		else if event-item is anvil named "{@gui_kit_edit}":
+			kitedit_editor(player)
+		else if event-item is diamond sword named "{@gui_kit_save}" or "{@gui_kit_list}":
+			kitedit_kitsave(player)
+		else if event-item is diamond sword named "{@gui_kit_list}":
+			kitedit_kitsave(player)
+		else if event-item is diamond sword named "&r&lsaveKit":
+			close player's inventory
+			wait 1 tick
+			set {kitcreate.kit.%player%} to 1
+			make player execute command "kitcreate multisave 1"
+		else:
+			cancel event
+	
+	if name of clicked inventory is "{@gui_kit_list}":
+		loop 9 time:
+			if event-item is diamond sword named "&r&a&lLoad Kit %loop-number%":
+				close player's inventory
+				wait 1 tick
+				make player execute command "kitcreate multiload %loop-number%"
+		loop 9 time:
+			if event-item is anvil named "&r&b&lSave Kit %loop-number%":
+				set {kitedit_temp_%player%_count} to loop-number
+				make player execute command "kitedit saveconfirm"
+				#kitedit_saveconfirm(player)
+		loop 9 time:
+			if event-item is red wool named "&r&4&lDelete Kit %loop-number%":
+				set {kitedit_temp_%player%_count} to loop-number
+				make player execute command "kitedit deleteconfirm"
+				#kitedit_deleteconfirm(player)
+			
+	if name of clicked inventory is "{@kit_editor}":
+		if event-item is end crystal named "{@kit_editor_crystal}":
+			kitedit_crystal(player)
+			kitedit_log(player,"crystal")
+
+		if event-item is enchanted golden apple named "{@kit_editor_gapple}":
+			kitedit_gapple(player)
+			kitedit_log(player,"gapple")
+
+		if event-item is totem of undying named "{@kit_editor_totem}":
+			kitedit_totem(player)
+			kitedit_log(player,"totem")
+
+		if event-item is experience bottle named "{@kit_editor_bottle}":
+			kitedit_bottle(player)
+			kitedit_log(player,"bottle")
+
+		if event-item is redstone block named "{@kit_editor_piston}":
+			kitedit_piston(player)
+			kitedit_log(player,"piston")
+
+		if event-item is diamond helmet named "{@kit_editor_armor}":
+			kitedit_armor(player)
+			kitedit_log(player,"armor")
+
+		if event-item is arrow named "{@kit_editor_arrow}":
+			kitedit_arrow(player)
+			kitedit_log(player,"arrow")
+
+		if event-item is diamond sword named "{@kit_editor_tool}":
+			kitedit_tool(player)
+			kitedit_log(player,"tool")
+
+		if event-item is obsidian named "{@kit_editor_block}":
+			kitedit_block(player)
+			kitedit_log(player,"block")
+
+		if event-item is potion named "{@kit_editor_potion}":
+			kitedit_potion(player)
+			kitedit_log(player,"potion")
+			
+		if event-item is ender pearl named "{@kit_editor_items}":
+			kitedit_items(player)
+			kitedit_log(player,"items")
+
+		if event-item is anvil named "{@kit_editor_back}":
+			make player execute command "kitedit"
+			#kitedit_log(player,"main-gui")
+			
+	if name of clicked inventory is "{@kit_editor_crystal}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_crystal(player)
+
+	if name of clicked inventory is "{@kit_editor_gapple}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_gapple(player)
+
+	if name of clicked inventory is "{@kit_editor_totem}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_totem(player)
+
+	if name of clicked inventory is "{@kit_editor_bottle}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_bottle(player)
+
+	if name of clicked inventory is "{@kit_editor_piston}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_piston(player)
+
+	if name of clicked inventory is "{@kit_editor_armor}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_armor(player)
+
+	if name of clicked inventory is "{@kit_editor_arrow}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_arrow(player)
+
+	if name of clicked inventory is "{@kit_editor_tool}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_tool(player)
+
+	if name of clicked inventory is "{@kit_editor_block}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_block(player)
+
+	if name of clicked inventory is "{@kit_editor_potion}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_potion(player)
+			
+	if name of clicked inventory is "{@kit_editor_items}":
+		if event-item is anvil named "{@kit_editor_back}":
+			kitedit_editor(player)
+		if event-item is anvil named "{@kit_editor_replace}":
+			kitedit_items(player)
+
+function kitedit_kitsave(player:player):
+	open chest inventory with 2 row named "{@gui_kit_list}" to {_player}
+	if {kitcreate.kit.%{_player}%} = 2:
+		set {_count} to 0
+		loop 9 time:
+			if {kitcreate::savekit::%{_player}%::%loop-number%} = 1:
+				set slot {_count} of {_player}'s current inventory to diamond sword named "&r&a&lLoad Kit %loop-number%"
+				set slot {_count}+9 of {_player}'s current inventory to red wool named "&r&4&lDelete Kit %loop-number%"
+			else:
+				set slot {_count} of {_player}'s current inventory to anvil named "&r&b&lSave Kit %loop-number%"
+			add 1 to {_count}
+	
+	else if {kitcreate.kit.%{_player}%} = 1:
+		format slot 0 of {_player} with diamond sword named "&r&l&aSave Kit" to run [make {_player} execute command "kitcreate multisave"]
+		format slot 8 of {_player} with diamond sword named "&r&l&aLoad Old Kit" to run [make {_player} execute command "kitcreate load"]
+
+function kitedit_saveconfirm(player:player):
+	if {kitedit_temp_%{_player}%_count} is not set:
+		open chest inventory with 1 rows named "{@kit_saveconfirm}" to {_player}
+		format slot 3 of {_player} with lime wool named "&r&a&lOK" to run [make {_player} execute command "kitcreate multisave"]
+		format slot 5 of {_player} with red wool named "&r&c&lNG" to run [make {_player} execute command "kitedit"]
+	else:
+		open chest inventory with 1 rows named "{@kit_saveconfirm}:&lKit%{kitedit_temp_%{_player}%_count}%" to {_player}
+		format slot 3 of {_player} with lime wool named "&r&a&lOK" to run [make {_player} execute command "kitcreate multisave %{kitedit_temp_%{_player}%_count}%"]
+		format slot 5 of {_player} with red wool named "&r&c&lNG" to run [make {_player} execute command "kitedit"]
+
+function kitedit_deleteconfirm(player:player):
+	if {kitedit_temp_%{_player}%_count} is set:
+		open chest inventory with 1 rows named "{@kit_deleteconfirm}:&lKit%{kitedit_temp_%{_player}%_count}%" to {_player}
+		format slot 3 of {_player} with lime wool named "&r&l&aOK" to run [make {_player} execute command "kitcreate clear %{kitedit_temp_%{_player}%_count}%"]
+		format slot 5 of {_player} with red wool named "&r&l&cNG" to run [make {_player} execute command "kitedit"]
+
+function kitedit_armor(player:player):
+	open chest inventory with 5 rows named "{@kit_editor_armor}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	set slot 36 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 44 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_arrow(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_arrow}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 tipped arrow of strong harming
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 tipped arrow of long weakness
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 tipped arrow of strong strength
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_block(player:player):
+	open chest inventory with 5 rows named "{@kit_editor_block}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 obsidian
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 web
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 ender chest
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 anvil
+		add 1 to {_count}
+	set slot 36 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 44 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_editor(player:player):
+	open chest inventory with 2 rows named "{@kit_editor}" to {_player}
+	set slot 0 of {_player}'s current inventory to end crystal named "{@kit_editor_crystal}"
+	set slot 1 of {_player}'s current inventory to enchanted golden apple named "{@kit_editor_gapple}"
+	set slot 2 of {_player}'s current inventory to redstone block named "{@kit_editor_piston}"
+	set slot 3 of {_player}'s current inventory to totem of undying named "{@kit_editor_totem}"
+	set slot 4 of {_player}'s current inventory to experience bottle named "{@kit_editor_bottle}"
+	set slot 5 of {_player}'s current inventory to potion named "{@kit_editor_potion}"
+
+	set slot 9 of {_player}'s current inventory to diamond sword named "{@kit_editor_tool}"
+	set slot 10 of {_player}'s current inventory to diamond helmet named "{@kit_editor_armor}"
+	set slot 11 of {_player}'s current inventory to arrow named "{@kit_editor_arrow}"
+	set slot 12 of {_player}'s current inventory to obsidian named "{@kit_editor_block}"
+	set slot 13 of {_player}'s current inventory to ender pearl named "{@kit_editor_items}"
+	set slot 17 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_bottle(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_bottle}" to {_player}
+	set {_count} to 0
+	loop 27 time:
+		set slot {_count} of {_player}'s current inventory to 64 experience bottle
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_crystal(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_crystal}" to {_player}
+	set {_count} to 0
+	loop 27 time:
+		set slot {_count} of {_player}'s current inventory to 64 end crystal
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_gapple(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_gapple}" to {_player}
+	set {_count} to 0
+	loop 18 time:
+		set slot {_count} of {_player}'s current inventory to 64 enchanted golden apple
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 chorus fruit
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_items(player:player):
+	open chest inventory with 3 rows named "{@kit_editor_items}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 16 ender pearl
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 iron trapdoor
+		add 1 to {_count}
+	set slot 18 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 26 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_piston(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_piston}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 piston
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 redstone torch
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to 64 redstone block
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_potion(player:player):
+	open chest inventory with 5 rows named "{@kit_editor_potion}" to {_player}
+	set {_count} to 0
+	loop 36 time:
+		set slot {_count} of {_player}'s current inventory to potion of strong strength
+		add 1 to {_count}
+	set slot 36 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 44 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_tool(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_tool}" to {_player}
+	set {_count} to 0
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	loop 9 time:
+		set slot {_count} of {_player}'s current inventory to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+		add 1 to {_count}
+	loop 9 time:
+		#set slot {_count} of player's current inventory to bow of unbreaking 3 and power 5 and punch 2 and flame and mending 1
+		set slot {_count} of {_player}'s current inventory to bow of unbreaking 3 and punch 1 and flame and mending 1
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_totem(player:player):
+	open chest inventory with 4 rows named "{@kit_editor_totem}" to {_player}
+	set {_count} to 0
+	loop 27 time:
+		set slot {_count} of {_player}'s current inventory to totem of undying
+		add 1 to {_count}
+	set slot 27 of {_player}'s current inventory to anvil named "{@kit_editor_replace}"
+	set slot 35 of {_player}'s current inventory to anvil named "{@kit_editor_back}"
+
+function kitedit_log(p:player, gui:text):
+	send "{@prefix}%{_p}%に%{_gui}%を表示" to console

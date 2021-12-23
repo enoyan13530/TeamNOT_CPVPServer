@@ -1,0 +1,256 @@
+#=========================================
+#
+#          Crystal PVP専用Skript
+#
+#            Create by enoyan
+#
+#=========================================
+
+options:
+	prefix: &8[&l&4DUELOLD&r&8]&f
+
+command /duelold [<text>] [<text>]:
+	trigger:
+		if arg-1 is set:
+			if arg-1 is player:
+				send "{@prefix}自分と戦うことができません" to player
+				stop
+			loop all players:
+				if name of loop-player is arg-1:
+					if {duel.start} = 1:
+						send "{@prefix}他のプレイヤーがduelを開始してるため送ることができません"
+						stop
+					if {cpvp.%arg-1%} = 1:
+						send "{@prefix}相手が戦場にいるため送ることができません" to player
+						stop
+					set {duelplayer1} to player
+					set {duelplayer2} to loop-player
+					set {duelplayer.%player%} to player
+					set {duelplayer.%player%} to loop-player
+					set {duelplayer.%player%} to 1
+					set {duelplayer.%loop-player%} to 1
+					if arg-2 is set:
+						if arg-2 is "flat":
+							set {duelworld} to "flat"
+					else:
+						set {duelworld} to "normal"
+						#broadcast "{duelworld}:%{duelworld}%"
+					send "{@prefix}%{duelplayer2}%とマッチしました。相手の認証待ちです。" to {duelplayer1}
+					send "{@prefix}20秒以内に相手のプレイヤーが承認しない場合無効になります" to {duelplayer1}
+					send "{@prefix}%{duelplayer1}%とマッチしました。" to {duelplayer2}
+					send "{@prefix}20秒以内に承認しない場合無効になります" to {duelplayer2}
+					#send "{@prefix}/accept で開始できます。" to {duelplayer2}
+					#execute command "tellraw %player% ["",{""text"":""["",""color"":""dark_gray""},{""text"":""DUEL"",""bold"":true,""color"":""dark_red""},{""text"":""]"",""color"":""dark_gray""},{""text"":""\u3053\u3053\u3092\u30af\u30ea\u30c3\u30af"",""bold"":true,""color"":""green"",""clickEvent"":{""action"":""run_command"",""value"":""/duel accept""}},{""text"":""\u3059\u308b\u3068DUEL\u304c\u958b\u59cb\u3067\u304d\u307e\u3059""}]"
+					execute console command "tellraw %{duelplayer2}% ["""",{""text"":""Click here"",""bold"":true,""color"":""green"",""clickEvent"":{""action"":""run_command"",""value"":""/duel accept""}},{""text"":"" to start duel""}]"
+					set {duel.found} to 1
+					set {duelaccept.%loop-player%} to 1
+					wait 20 second
+					if {duel.start} = 1:
+						set {duelplayer.%player%} to 1
+						set {duelplayer.%loop-player%} to 1
+						stop
+					else:
+						send "{@prefix}相手のプレイヤーが承認しませんでした" to {duelplayer1}
+						send "{@prefix}承認しませんでした" to {duelplayer2}
+						clear {duelplayer1}
+						clear {duelplayer2}
+						clear {duelplayer.%player%}
+						clear {duelplayer.%loop-player%}
+						clear {duelaccept.%loop-player%}
+						clear {duelplayer.%player%}
+			
+			if {duel.found} != 1:
+				send "{@prefix}プレイヤーが見つかりませんでした" to player
+					
+			if arg-1 is "accept":
+				if {duelaccept.%player%} = 1:
+					clear {duel.found}
+					send "{@prefix}対戦を開始します" to player
+					set {duel.start} to 1
+					wait 0.2 second
+					if {duelworld} = "flat":
+						teleport {duelplayer1} to {cpvpduelfspawn1}
+						teleport {duelplayer2} to {cpvpduelfspawn2}
+					else:
+						teleport {duelplayer1} to {cpvpduelspawn1}
+						teleport {duelplayer2} to {cpvpduelspawn2}
+					wait 0.5 second
+					set {_count} to 5
+					loop 5 time:
+						if {duelworld} = "flat":
+							teleport {duelplayer1} to {cpvpduelfspawn1}
+							teleport {duelplayer2} to {cpvpduelfspawn2}
+						else:
+							teleport {duelplayer1} to {cpvpduelspawn1}
+							teleport {duelplayer2} to {cpvpduelspawn2}
+						execute console command "playsound minecraft:block.note.pling block %{duelplayer1}% 50 4 -50 100 1 0"
+						execute console command "playsound minecraft:block.note.pling block %{duelplayer2}% -50 4 50 100 1 0"
+						send "{@prefix}残り%{_count}%秒で開始します" to {duelplayer1}
+						send "{@prefix}残り%{_count}%秒で開始します" to {duelplayer2}
+						add -1 to {_count}
+						wait 1 second
+					execute console command "playsound minecraft:block.note.pling block %{duelplayer1}% ~ ~ ~ 100 2 0"
+					execute console command "playsound minecraft:block.note.pling block %{duelplayer2}% ~ ~ ~ 100 2 0"
+					send "{@prefix}スタート" to {duelplayer1}
+					send "{@prefix}スタート" to {duelplayer2}
+					clear {_count}
+				else:
+					send "{@prefix}マッチしていないためこのコマンドは実行できません" to player
+					
+			if arg-1 is "end":
+				send "{@prefix}バトルが終了しました。" to {duelplayer1}
+				send "{@prefix}バトルが終了しました。" to {duelplayer2}
+				send "{@prefix}5秒後ロビーにテレポートします。"
+				wait 5 second
+				execute console command "clear %{duelplayer1}%"
+				execute console command "clear %{duelplayer2}%"
+				teleport {duelplayer1} to {cpvplobby}
+				teleport {duelplayer2} to {cpvplobby}
+				clear {duel.start}
+				clear {duelworld}
+				loop all players:
+					if {cpvp.%loop-player%} = 1:
+						set {cpvp.%player%} to 0
+					if {duelplayer.%loop-player%} = 1:
+						clear {duelplayer.%loop-player%}
+						clear {duelplayer1}
+						clear {duelplayer2}
+						clear {duelaccept.%loop-player%}
+					clear {cpvp.%loop-player%}
+				loop entities:
+					loop-entity is dropped item 
+					delete loop-entity
+			if arg-1 is "reset":
+				clear {duel.start}
+				teleport {duelplayer1} to {cpvplobby}
+				teleport {duelplayer2} to {cpvplobby}
+				clear {duelplayer1}
+				clear {duelplayer2}
+				clear {duelworld}
+				
+		else:
+			send "{@prefix}プレイヤーを入力してください" to player
+			#open chest inventory with 4 rows named "{@prefix}" to player
+			#set {_count} to 0
+			#set {_duel::player::count::*} to null
+			#set {duel.world.modify} to "normal"
+			#set {duel.world.modifycount} to 0
+			#clear {duel::findplayer::*}
+			#loop all players:
+				#add {duel::findplayer::%{_count}%} to loop-player
+				#add {_duel::player::count::%{_count}%} to loop-player
+				#format slot {_count} of player with diamond sword named "&r&l%loop-player%" to run [make player execute command "duel %{duel::findplayer::%{_count}%}%"]
+				#send "%{_duel::player::count::%{_count}%}%" to player
+				#send "{duel::findplayer::%{_count}%}:%{duel::findplayer::%{_count}%}%"
+				#add 1 to {_count}
+			#format slot 35 of player with grass named "&r&lノーマルワールド" to run [make player execute command "duelsetting worldmodify"]
+command /accept:
+	trigger:
+		make player execute command "/duel accept"
+
+command /duelsetting [<text>]:
+	trigger:
+		if arg-1 is "spawn1":
+			set {cpvpduelspawn1} to location of player
+			send "{@prefix}1人目のスポーン場所を設定しました" to player
+		if arg-1 is "spawn2":
+			set {cpvpduelspawn2} to location of player
+			send "{@prefix}f2人目のスポーン場所を設定しました" to player
+		if arg-1 is "fspawn1":
+			set {cpvpduelfspawn1} to location of player
+			send "{@prefix}1人目のスポーン場所を設定しました" to player
+		if arg-1 is "fspawn2":
+			set {cpvpduelfspawn2} to location of player
+			send "{@prefix}2人目のスポーン場所を設定しました" to player
+		if arg-1 is "gotospawn1":
+			execute console command "gamemode sp %player%"
+			teleport player to {cpvpduelspawn1}
+		if arg-1 is "gotospawn2":
+			execute console command "gamemode sp %player%"
+			teleport player to {cpvpduelspawn2}
+		if arg-1 is "gotofspawn1":
+			execute console command "gamemode sp %player%"
+			teleport player to {cpvpduelfspawn1}
+		if arg-1 is "gotofspawn2":
+			execute console command "gamemode sp %player%"
+			teleport player to {cpvpduelfspawn2}
+		if arg-1 is "worldmodify":
+			if {duel.world.modifycount} = 0:
+				set {duel.world.modify} to "flat"
+				set {duel.world.modifycount} to 1
+				format slot 35 of player with grass named "&r&lフラットワールド" to run [make player execute command "duelsetting worldmodify"]
+			else:
+				set {duel.world.modify} to "normal"
+				set {duel.world.modifycount} to 0
+				format slot 35 of player with grass named "&r&lノーマルワールド" to run [make player execute command "duelsetting worldmodify"]
+			execute console command "playsound minecraft:block.note.pling block %player% ~ ~ ~ 100 1 0"
+
+command /testcmd:
+	trigger:
+		teleport player to location at (0, 10, 0) in world "duel2"
+
+command /dueltest:
+	trigger:
+		set {_x} to 10
+		set {_y} to 1
+		set {_z} to 10
+
+		set {_count} to {_x} * {_z}
+		set {_count2} to 0
+
+		set {_math} to {_x} - {_x}
+		set {_x1} to {_math} - {_x}
+		set {_math} to {_z} - {_z}
+		set {_z1} to {_math} - {_z}
+
+		set {_x} to {_x} + 0.5
+		set {_z} to {_z} + 0.5
+		set {_x1} to {_x1} + 0.5
+		set {_z1} to {_z1} + 0.5
+
+		#if block at location at ({_X}, {_y}, {_z}) in world "duel2" is redstone block:
+			#set block at location at ({_X}, {_y}, {_z}) in world "duel2" to air
+			#send "{@prefix}クリアしました"
+		#else:
+			#send "{@prefix}すでにクリアされています"
+		#set block at location at (0.5, 1, 0) in world "duel2" to redstone block
+		#set block at location at (1, 1, 0) in world "duel2" to redstone block
+		#set block at location at (-0.5, 1, 0) in world "duel2" to redstone block
+		while {_count} >= 0:
+			if {_x} = {_x1}:
+				if {_count2} = 0:
+					set {_x} to {_x} - 0.5
+					set {_x1} to {_x1} - 0.5
+					set {_math} to {_x} + {_x}
+					set {_x1} to {_math} + {_x}
+					set {_x} to {_x} + 0.5
+					set {_x1} to {_x1} + 0.5
+					set {_count2} to 1
+				else:
+					set {_x} to {_x} - 0.5
+					set {_x1} to {_x1} - 0.5
+					set {_math} to {_x} - {_x}
+					set {_x1} to {_math} - {_x}
+					set {_x} to {_x} + 0.5
+					set {_x1} to {_x1} + 0.5
+					set {_count2} to 0
+				add -1 to {_z}
+
+			set block at location at ({_x}, {_y}, {_z}) in world "duel2" to redstone block
+
+			if {_count2} = 0:
+				add -1 to {_x}
+			else:
+				add 1 to {_x}
+			add -1 to {_count}
+		send "設置しました"
+
+
+on death of player:
+	if {duel.start} = 1:
+		if {duelplayer.%player%} != 1:
+			stop
+		else:
+			#execute console command "clear %player%"
+			execute console command "kill @e[type=item]"
+			make player execute command "/duel end"

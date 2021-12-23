@@ -1,0 +1,996 @@
+on inventory click:
+	if name of clicked inventory is "kit menu":
+		if event-item is diamond sword named "&r&ldefault kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit default"
+		else if event-item is diamond sword named "&r&ldefault op kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit defaultop"
+		else if event-item is diamond sword named "&r&l32kLagMachine kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit op"
+		else if event-item is diamond sword named "&r&larmor kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit armor"
+		else if event-item is diamond sword named "&r&lpiston kit(block)":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit pistonblock"
+		else if event-item is diamond sword named "&r&lpiston kit(torch)":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit pistontorch"
+		else if event-item is diamond sword named "&r&lcrystal kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit crystal"
+		else if event-item is diamond sword named "&r&ltotem kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit totem"
+		else if event-item is diamond sword named "&r&lstrength kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit strength"
+		else if event-item is diamond sword named "&r&lbow kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit bow"
+		
+		else if event-item is diamond sword named "&r&lika34zuki kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit ika34zuki"
+		else if event-item is diamond sword named "&r&lenoyan kit" with lore "&r古いkitです":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit enoyan"
+		else if event-item is diamond sword named "&r&lyaki55 kit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit yaki55"
+		
+		else if event-item is anvil named "&r&lKitEdit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitedit"
+		
+		else if event-item is diamond sword named "&r&lLoad Kit 1":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 1"
+		else if event-item is diamond sword named "&r&lLoad Kit 2":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 2"
+		else if event-item is diamond sword named "&r&lLoad Kit 3":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 3"
+		else if event-item is diamond sword named "&r&lLoad Kit 4":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 4"
+		else if event-item is diamond sword named "&r&lLoad Kit 5":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 5"
+		else if event-item is diamond sword named "&r&lLoad Kit 6":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 6"
+		else if event-item is diamond sword named "&r&lLoad Kit 7":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 7"
+		else if event-item is diamond sword named "&r&lLoad Kit 8":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 8"
+		else if event-item is diamond sword named "&r&lLoad Kit 9":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate multiload 9"
+
+		else if event-item is diamond sword named "&r&lLoadOldKit" with lore "&r&l&4kitの保存形式が古い物です。新しいkitの保存形式の使用を推奨します。":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitcreate load"
+		else if event-item is diamond sword named "&r&lLoadKit":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kitedit multikitsave"
+		
+		else if event-item is diamond sword named "&r&lGoTo2b2TWorld":
+			close player's inventory
+			wait 0.1 second
+			if {privateworld.world.%player%} != 1:
+				execute console command "mvtp %player% 2b2t"
+				send "テレポートしました"
+			else:
+				send "移動できません"
+
+command /kit [<text>]:
+	trigger:
+		open chest inventory with 4 rows named "kit menu" to player
+		
+		#defaultkit
+		set slot 0 of player's current inventory to diamond sword named "&r&ldefault kit"
+		#set slot 1 of player's current inventory to diamond sword named "&r&ldefault op kit"
+		#set slot 1 of player's current inventory to diamond sword named "&r&l32kLagMachine kit"
+		set slot 1 of player's current inventory to diamond sword named "&r&larmor kit"
+		set slot 2 of player's current inventory to diamond sword named "&r&lpiston kit(block)"
+		set slot 3 of player's current inventory to diamond sword named "&r&lpiston kit(torch)"
+		set slot 4 of player's current inventory to diamond sword named "&r&lcrystal kit"
+		set slot 5 of player's current inventory to diamond sword named "&r&ltotem kit"
+		set slot 6 of player's current inventory to diamond sword named "&r&lstrength kit"
+		set slot 7 of player's current inventory to diamond sword named "&r&lbow kit"
+
+		set slot 27 of player's current inventory to diamond sword named "&r&lGoTo2b2TWorld"
+
+		#Custolkit
+		if {kitcreate.kit.%player%} = 2:
+			set {_count} to 9
+			set {_count2} to 1
+			set {_boolean} to "false"
+			loop 9 time:
+				if {_count2} = 1:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 2:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 3:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 4:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 5:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 6:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 7:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 8:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				if {_count2} = 9:
+					if {kitcreate::savekit::%player%::%{_count2}%} = 1:
+						set slot {_count} of player's current inventory to diamond sword named "&r&lLoad Kit %{_count2}%"
+						set {_boolean} to "true"
+				add 1 to {_count2}
+				if {_boolean} = "true":
+					add 1 to {_count}
+					set {_boolean} to "false"
+
+		set slot 35 of player's current inventory to anvil named "&r&lKitEdit"
+		
+		if {kitcreate.kit.%player%} = 1:
+			set slot 34 of player's current inventory to diamond sword named "&r&lLoadOldKit" with lore "&r&l&4kitの保存形式が古い物です。新しいkitの保存形式の使用を推奨します。"
+		else if {kitcreate.kit.%player%} = 2:
+			set slot 34 of player's current inventory to diamond sword named "&r&lLoadKit"
+		
+		if arg-1 is "default":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to 64 experience bottle
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to 64 end crystal
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 ender chest
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to 64 experience bottle
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to 64 end crystal
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 obsidian
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 enchanted golden apple
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "defaultop":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to 64 experience bottle
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to 64 redstone block
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 ender chest
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to 64 experience bottle
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to 64 piston
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 obsidian
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 enchanted golden apple
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and fire protection 4 and feather falling 4 and blast protection 4 and projectile protection 4 and thorns 3 and depth strider 3 and frost walker 2 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "enoyan":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to 64 experience bottle
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 15 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to 64 experience bottle
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 24 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 piston
+			set slot 33 of player to 64 redstone block
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "ika34zuki":
+			#コマンドで矢を出してるため、一回アイテムを全部削除
+			execute console command "clear %player%"
+			
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to bow of punch 2 and sharpness and fire aspect 2 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 chorus fruit
+			set slot 3 of player to 64 enchanted golden apple
+			set slot 4 of player to 64 redstone torch
+			set slot 5 of player to 64 piston
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 8 of player to 64 experience bottle
+			#インベントリー1
+			set slot 9 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 10 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 11 of player to potion of strength
+			set slot 12 of player to 64 end crystal
+			set slot 13 of player to 1 totem of undying
+			set slot 14 of player to 1 totem of undying
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 obsidian
+			set slot 17 of player to 64 experience bottle
+			#インベントリー2
+			set slot 18 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 19 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 20 of player to potion of strength
+			set slot 21 of player to 64 end crystal
+			set slot 22 of player to 1 totem of undying
+			set slot 23 of player to 1 totem of undying
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 obsidian
+			set slot 26 of player to 64 experience bottle
+			#インベントリー3
+			execute console command "/give %player% minecraft:tipped_arrow 64 0 {Potion:""minecraft:harming""}"
+			set slot 28 of player to 64 experience bottle
+			set slot 29 of player to potion of strength
+			set slot 30 of player to 64 end crystal
+			set slot 31 of player to 1 totem of undying
+			set slot 32 of player to 1 totem of undying
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 obsidian
+			set slot 35 of player to 64 experience bottle
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "yaki55":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 enchanted golden apple
+			set slot 3 of player to 64 redstone torch
+			set slot 4 of player to 64 piston
+			set slot 5 of player to 64 experience bottle
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 chorus fruit
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 10 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 11 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 12 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to 64 end crystal
+			set slot 14 of player to 64 end crystal
+			set slot 15 of player to 64 enchanted golden apple
+			set slot 16 of player to 64 experience bottle
+			set slot 17 of player to 64 experience bottle
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to 64 enchanted golden apple
+			set slot 22 of player to 64 end crystal
+			set slot 23 of player to 64 end crystal
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to totem of undying
+			set slot 26 of player to totem of undying
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to 64 ender chest
+			set slot 31 of player to 64 end crystal
+			set slot 32 of player to 64 end crystal
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to totem of undying
+			set slot 35 of player to totem of undying
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "masyumaro2020":
+			#コマンドで矢を出してるため、一回アイテムを全部削除
+			execute console command "clear %player%"
+			
+			#ホットバー
+			set slot 0 of player to bow of punch 2 and sharpness and fire aspect 2 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to wooden sword
+			set slot 2 of player to stone axe
+			set slot 3 of player to 64 glass
+			set slot 4 of player to 64 apple
+			set slot 5 of player to 64 chorus fruit
+			set slot 6 of player to 16 egg
+			set slot 7 of player to 16 ender pearl
+			set slot 8 of player to 64 poppy named "和解用ポピー"
+			#インベントリー1
+			execute console command "/give %player% minecraft:tipped_arrow 64 0 {Potion:""minecraft:harming""}"
+			execute console command "/give %player% minecraft:tipped_arrow 64 0 {Potion:""minecraft:harming""}"
+			set slot 11 of player to totem of undying
+			set slot 12 of player to totem of undying
+			set slot 13 of player to totem of undying
+			set slot 14 of player to totem of undying
+			set slot 15 of player to totem of undying
+			set slot 16 of player to totem of undying
+			set slot 17 of player to totem of undying
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to totem of undying
+			set slot 22 of player to totem of undying
+			set slot 23 of player to totem of undying
+			set slot 24 of player to totem of undying
+			set slot 25 of player to totem of undying
+			set slot 26 of player to totem of undying
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to totem of undying
+			set slot 31 of player to totem of undying
+			set slot 32 of player to totem of undying
+			set slot 33 of player to totem of undying
+			set slot 34 of player to totem of undying
+			set slot 35 of player to totem of undying
+			#インベントリー装備
+			set slot 39 of player to leather helmet
+			set slot 38 of player to leather chestplate
+			set slot 37 of player to leather leggings
+			set slot 36 of player to leather boots
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+
+
+		if arg-1 is "armor":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 experience bottle
+			set slot 3 of player to 64 chorus fruit
+			set slot 4 of player to 64 ender chest
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to 64 experience bottle
+			set slot 12 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 14 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to 64 experience bottle
+			set slot 21 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 23 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to 64 experience bottle
+			set slot 30 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 31 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 32 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 end crystal
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "pistonblock":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 14 of player to 64 experience bottle
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 23 of player to 64 experience bottle
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to 64 piston
+			set slot 28 of player to 64 redstone block
+			set slot 29 of player to 64 piston
+			set slot 30 of player to 64 redstone block
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 experience bottle
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+			
+		if arg-1 is "pistontorch":
+			#ホットバー
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone torch
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 14 of player to 64 experience bottle
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 23 of player to 64 experience bottle
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to 64 piston
+			set slot 28 of player to 64 redstone torch
+			set slot 29 of player to 64 piston
+			set slot 30 of player to 64 redstone torch
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 experience bottle
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "crystalold":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 chorus fruit
+			set slot 3 of player to 64 enchanted golden apple
+			set slot 4 of player to 64 enchanted golden apple
+			set slot 5 of player to 64 end crystal
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to 64 experience bottle
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to 64 end crystal
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 ender chest
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to 64 experience bottle
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to 64 end crystal
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 obsidian
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 end crystal
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "totem":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 enchanted golden apple
+			set slot 5 of player to 64 chorus fruit
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to totem of undying
+			set slot 12 of player to totem of undying
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to 64 experience bottle
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to totem of undying
+			set slot 21 of player to totem of undying
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to 64 experience bottle
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to totem of undying
+			set slot 30 of player to totem of undying
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 experience bottle
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 obsidian
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "strength":
+			#コマンドでポーションを出してるため、一回アイテムを全部削除
+			execute console command "clear %player%"
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to potion of strong strength
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 12 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to potion of strong strength
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 ender chest
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 21 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to potion of strong strength
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to 64 experience bottle
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to potion of strong strength
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 end crystal
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+
+		if arg-1 is "bow":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to bow of unbreaking 3 and punch 1 and flame and mending 1
+			set slot 3 of player to 64 piston
+			set slot 4 of player to 64 redstone block
+			set slot 5 of player to 64 chorus fruit
+			set slot 6 of player to 64 enchanted golden apple
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 12 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to 64 experience bottle
+			set slot 14 of player to 64 tipped arrow of strong harming
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 ender chest
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 21 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to 64 experience bottle
+			set slot 23 of player to 64 tipped arrow of long weakness
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to 64 experience bottle
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 experience bottle
+			set slot 32 of player to 64 tipped arrow of strong strength
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 end crystal
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+		
+		if arg-1 is "crystal":
+			#ホットバー
+			set slot 0 of player to diamond sword of sharpness 5 and knockback 2 and fire aspect 2 and looting 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 1 of player to diamond pickaxe of efficiency 5 and unbreaking 3 and fortune 3 and mending 1 and curse of vanishing 1
+			set slot 2 of player to 64 piston
+			set slot 3 of player to 64 redstone block
+			set slot 4 of player to 64 chorus fruit
+			set slot 5 of player to 64 enchanted golden apple
+			set slot 6 of player to 64 end crystal
+			set slot 7 of player to 64 end crystal
+			set slot 8 of player to 64 obsidian
+			#インベントリー1
+			set slot 9 of player to totem of undying
+			set slot 10 of player to totem of undying
+			set slot 11 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 12 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 13 of player to 64 end crystal
+			set slot 14 of player to 64 end crystal
+			set slot 15 of player to 64 end crystal
+			set slot 16 of player to 64 end crystal
+			set slot 17 of player to 64 end crystal
+			#インベントリー2
+			set slot 18 of player to totem of undying
+			set slot 19 of player to totem of undying
+			set slot 20 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 21 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 22 of player to 64 end crystal
+			set slot 23 of player to 64 end crystal
+			set slot 24 of player to 64 end crystal
+			set slot 25 of player to 64 end crystal
+			set slot 26 of player to 64 end crystal
+			#インベントリー3
+			set slot 27 of player to totem of undying
+			set slot 28 of player to totem of undying
+			set slot 29 of player to 64 experience bottle
+			set slot 30 of player to 64 experience bottle
+			set slot 31 of player to 64 end crystal
+			set slot 32 of player to 64 end crystal
+			set slot 33 of player to 64 end crystal
+			set slot 34 of player to 64 end crystal
+			set slot 35 of player to 64 end crystal
+			#インベントリー装備
+			set slot 39 of player to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 38 of player to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 37 of player to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+			set slot 36 of player to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+			
+			#オフハンド
+			set slot 40 of player to totem of undying
+			
+			close player's inventory
+			send "&8[&3CPVP&8]&fアイテムを付与しました" to player
+
+		if arg-1 is "op":
+			if {opmode} = 0:
+				send "&8[&3CPVP&8]&f現在op kitを利用できません" to player
+				close player's inventory
+			else:
+				#ホットバー
+				set slot 0 of player to 64 diamond sword of sharpness 32000 and knockback 32000 and fire aspect 32000 and looting 32000 and unbreaking 32000 and mending 32000 and curse of vanishing 32000
+				set slot 1 of player to 64 diamond pickaxe of efficiency 32000 and unbreaking 32000 and fortune 32000 and mending 32000 and curse of vanishing 32000
+				set slot 2 of player to 64 piston
+				set slot 3 of player to 64 redstone block
+				set slot 4 of player to 64 chorus fruit
+				set slot 5 of player to 64 enchanted golden apple
+				set slot 6 of player to 64 end crystal
+				set slot 7 of player to 64 end crystal
+				set slot 8 of player to 64 obsidian
+				#インベントリー1
+				set slot 9 of player to 64 totem of undying
+				set slot 10 of player to 64 totem of undying
+				set slot 11 of player to 64 totem of undying
+				set slot 12 of player to 64 experience bottle
+				set slot 13 of player to 64 experience bottle
+				set slot 14 of player to 64 redstone block
+				set slot 15 of player to 64 end crystal
+				set slot 16 of player to 64 end crystal
+				set slot 17 of player to 64 ender chest
+				#インベントリー2
+				set slot 18 of player to 64 totem of undying
+				set slot 19 of player to 64 totem of undying
+				set slot 20 of player to 64 totem of undying
+				set slot 21 of player to 64 experience bottle
+				set slot 22 of player to 64 experience bottle
+				set slot 23 of player to 64 piston
+				set slot 24 of player to 64 end crystal
+				set slot 25 of player to 64 end crystal
+				set slot 26 of player to 64 obsidian
+				#インベントリー3
+				set slot 27 of player to 64 totem of undying
+				set slot 28 of player to 64 totem of undying
+				set slot 29 of player to 64 totem of undying
+				set slot 30 of player to 64 experience bottle
+				set slot 31 of player to 64 experience bottle
+				set slot 32 of player to 64 enchanted golden apple
+				set slot 33 of player to 64 end crystal
+				set slot 34 of player to 64 end crystal
+				set slot 35 of player to 64 obsidian
+				#インベントリー装備
+				set slot 39 of player to 64 diamond helmet of protection 32000 and respiration 32000 and aqua affinity 32000 and unbreaking 32000 and mending 32000 and curse of vanishing 32000
+				set slot 38 of player to 64 diamond chestplate of blast protection 32000 and thorns 32000 and unbreaking 32000 and mending 32000 and curse of vanishing 32000
+				set slot 37 of player to 64 diamond leggings of protection 32000 and unbreaking 32000 and mending 32000 and curse of vanishing 32000
+				set slot 36 of player to 64 diamond boots of protection 32000 and feather falling 32000 and depth strider 32000 and unbreaking 32000 and mending 32000 and curse of vanishing 32000
+				
+				#オフハンド
+				set slot 40 of player to 64 totem of undying
+
+				close player's inventory
+				send "&8[&3CPVP&8]&fアイテムを付与しました" to player

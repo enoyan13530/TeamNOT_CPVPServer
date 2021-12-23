@@ -1,0 +1,84 @@
+options:
+    prefix: &8[&4&lRemoveItem&r&8]&f
+
+#op装備の削除
+on command:
+    wait 1 tick
+    loop integers between 0 and 41:
+        if slot loop-integer of player's inventory is diamond helmet of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1:
+            send "{@prefix}アイテムを削除しました"
+            remove diamond helmet from the player
+        else if slot loop-integer of player's inventory is diamond chestplate of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1:
+            send "{@prefix}アイテムを削除しました"
+            remove diamond chestplate from the player  
+        else if slot loop-integer of player's inventory is diamond leggings of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1:
+            send "{@prefix}アイテムを削除しました"
+            remove diamond leggings from the player 
+        else if slot loop-integer of player's inventory is diamond boots of protection 4 and fire protection 4 and feather falling 4 and blast protection 4 and projectile protection 4 and thorns 3 and depth strider 3 and frost walker 2 and unbreaking 3 and mending 1 and curse of vanishing 1:
+            send "{@prefix}アイテムを削除しました"
+            remove diamond boots from the player
+
+#弓の削除
+on command:
+    wait 1 tick
+    loop integers between 0 and 41:
+        if slot loop-integer of player's inventory is bow of unbreaking 3 and power 5 and punch 2 and flame and mending 1:
+            send "{@prefix}アイテムを削除しました"
+            remove bow from the player
+
+on any move:
+    loop integers between 0 and 41:
+        if slot loop-integer of player's inventory is glass bottle:
+            send "{@prefix}アイテムを削除しました"
+            remove glass bottle from the player
+
+#トーテム削除
+on command:
+    wait 2 tick
+    set {_count} to 0
+    loop integers between 0 and 41:
+        if slot loop-integer of player's inventory is totem of undying:
+            add 1 to {_count}
+    if {_count} >= 18:
+        send "{@prefix}トーテムの持ちすぎです"
+        loop integers between 0 and 41:
+            if slot loop-integer of player's inventory is totem of undying:
+                remove totem of undying from the player
+
+#荒らし対策
+on command:
+	wait 2 tick
+	set {_count} to 0
+	loop integers between 0 and 41:
+		if slot loop-integer of player's inventory is obsidian:
+			add 1 to {_count}
+	if {_count} > 4:
+		send "{@prefix}ブロックの持ちすぎです"
+		set {_count} to 2
+		loop integers between 0 and 41:
+			if slot loop-integer of player's inventory is obsidian:
+				if {_count} != 0:
+					remove 64 obsidian from the player
+					add -1 to {_count}
+on command:
+	wait 2 tick
+	set {_count} to 0
+	loop integers between 0 and 41:
+		if slot loop-integer of player's inventory is redstone block:
+			add 1 to {_count}
+	if {_count} >= 4:
+		send "{@prefix}ブロックの持ちすぎです"
+		loop integers between 0 and 41:
+			if slot loop-integer of player's inventory is redstone block:
+				remove 64 redstone block from the player
+on command:
+	wait 2 tick
+	set {_count} to 0
+	loop integers between 0 and 41:
+		if slot loop-integer of player's inventory is redstone torch:
+			add 1 to {_count}
+	if {_count} >= 4:
+		send "{@prefix}アイテムの持ちすぎです"
+		loop integers between 0 and 41:
+			if slot loop-integer of player's inventory is redstone torch:
+				remove 64 redstone torch from the player

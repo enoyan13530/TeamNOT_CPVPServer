@@ -1,0 +1,299 @@
+options:
+    prefix: &f[&2&lPrivateWorld&r&f]&r
+
+    world_temp: privateworld_temp1
+
+    world_name: privateworld_
+
+    gui_create: &rワールド作成
+
+    gui_create_item: grass
+
+    gui_delete: &rワールド削除
+
+    gui_delete_item: flint and steel of unbreaking 3
+
+    gui_gamemode_creative: &rクリエイティブモードに変更
+
+    gui_gamemode_survival: &rサバイバルモードに変更
+
+    gui_gamemode_item: compass
+
+    gui_2b2tworld: &r2b2tworld
+
+    gui_2b2tworld_item: ender chest
+
+    gui_exit: &r閉じる
+
+    gui_exit_item: red wool
+
+on quit:
+    if {privateworld.world.%player%} = 1:
+        set {privateworld.location.temp.%player%} to location of player
+        set {_boolean} to false
+        wait 10 tick
+        loop 300 time:
+            if playerfind(player):
+                set {_boolean} to true
+                exit loop
+            wait 1 second
+        if !{_boolean}:
+            worldclear(player)
+            clear {privateworld.location.temp.%player%}
+        else:
+            send "{@prefix}鯖に入ったので削除しません" to console
+
+on join:
+    if {privateworld.location.temp.%player%} is set:
+        wait 1 tick
+        teleport player to {privateworld.location.temp.%player%}
+        clear {privateworld.location.temp.%player%}
+        send "{@prefix}テレポートしました"
+
+command /privateworld [<text>] [<text>] [<text>]:
+    #permission: skript.privateworld.premium
+    #permission message:&bこの機能はプレミアム加入者のみ使用できます
+    trigger:
+        #if player doesn't have permission "skript.privateworld.premium":
+            #send "{@prefix}この機能はプレミアム加入者のみ使用できます"
+            #stop
+        if arg-1 is set:
+            if arg-1 = "create":
+                set {_boolean} to premiumCheck(player)
+                if !{_boolean}:
+                    send "{@prefix}この機能はプレミアム加入者のみ使用可能です"
+                    stop
+                if {privateworld.world.%player%} != 1:
+                    set {privateworld.world.%player%} to 1
+                    send "{@prefix}ワールドを作成します"
+
+                    set {private.worldname.%player%} to "{@world_name}%player%"
+                    execute console command "mv clone {@world_temp} %{private.worldname.%player%}%"
+                    execute console command "mv modify set alias %{private.worldname.%player%}% %{private.worldname.%player%}%"
+
+                    wait 5 second
+
+                    execute console command "mvtp %player% %{private.worldname.%player%}%"
+
+                    send "{@prefix}テレポートしました"
+                else:
+                    send "{@prefix}あなたはすでに作成されています"
+            
+            else if arg-1 = "join":
+                if {privateworld.invite.player.%{privateworld.invited.%player%}%} is set:
+                    set {_player} to {privateworld.invited.%player%}
+                    execute console command "mvtp %player% %{private.worldname.%{_player}%}%"
+                    send "{@prefix}テレポートしました" to player
+                    set {privateworld.%{_player}%.boolean} to true
+                else:
+                    send "{@prefix}招待されていません"
+
+            else if arg-1 = "delete":
+                set {_boolean} to premiumCheck(player)
+                if !{_boolean}:
+                    send "{@prefix}この機能はプレミアム加入者のみ使用可能です"
+                    stop
+                if {privateworld.world.%player%} = 1:
+                    set {cpvp.%player%} to 0
+                    set {_p} to player
+                    loop all players:
+                        if loop-player is in world {private.worldname.%{_p}%}:
+                            teleport loop-player to {cpvplobby}
+                            send "{@prefix}test"
+                            if {privateworld::player::%player%::*} is set:
+                                clear {privateworld::player::%player%::*}
+
+                    wait 1 tick
+
+                    set player's gamemode to survival
+
+                    execute console command "mvdelete %{private.worldname.%player%}%"
+                    execute console command "mvconfirm"
+
+                    send "{@prefix}ワールドを削除しました"
+
+                    clear {private.worldname.%player%}
+                    clear {privateworld.world.%player%}
+                else:
+                    send "{@prefix}あなたはすでに削除しています"
+
+            else if arg-1 = "premium":
+                if player != "enoyan":
+                    if sender = player:
+                        send "{@prefix}このコマンドは実行できません"
+                        stop
+                if arg-2 is set:
+                    if arg-2 = "add":
+                        if arg-3 is set:
+                            set {_player} to arg-3
+
+                            set {_count} to 1
+                            set {_boolean} to true
+                            loop {privateworld::premium::*}:
+                                if {privateworld::premium::%{_count}%} = {_player}:
+                                    set {_boolean} to false
+                                add 1 to {_count}
+                            
+                            if {_boolean} = true:
+                                add {_player} to {privateworld::premium::*}
+                                send "{@prefix}%arg-3%を追加しました"
+                            else:
+                                send "{@prefix}%arg-3%がすでに追加されています"
+                        else:
+                            send "{@prefix}プレイヤー名を入力してください"
+                    else if arg-2 = "delete":
+                        if arg-3 is set:
+                            set {_player} to arg-3
+
+                            if {_player} = "enoyan":
+                                send "{@prefix}削除できません"
+                                stop
+                            
+                            set {_count} to 1
+                            set {_count2} to 1
+                            set {_boolean} to false
+                            loop {privateworld::premium::*}:
+                                if {privateworld::premium::%{_count}%} = {_player}:
+                                    set {_boolean} to true
+                                    set {_count2} to {_count}
+                                add 1 to {_count}
+                            
+                            if {_boolean} = true:
+                                delete {privateworld::premium::%{_count2}%}
+                                send "{@prefix}%arg-3%を削除しました"
+                            else:
+                                send "{@prefix}%arg-3%がすでに削除されています"
+                        else:
+                            send "{@prefix}プレイヤー名を入力してください"
+                    else if arg-2 = "list":
+                        send "<プレミアム所持リスト>"
+                        set {_count} to 0
+                        loop {privateworld::premium::*}:
+                            add 1 to {_count}
+                            send "[%{_count}%]:%{privateworld::premium::%{_count}%}%"
+                    else:
+                        send "{@prefix}コマンドが間違っています"
+                else:
+                    send "{@prefix}コマンドを入力してください"
+
+            else:
+                send "{@prefix}コマンドが間違っています"
+        else:
+            set {_boolean} to premiumCheck(player)
+            if !{_boolean}:
+                send "{@prefix}この機能はプレミアム加入者のみ使用可能です"
+                stop
+            #send "{@prefix}コマンドを入力してください"
+
+            if {privateworld.world.%player%} = 1:
+                open chest inventory with 4 rows named "{@prefix}" to player
+                set slot 2 of player's current inventory to {@gui_delete_item} named "{@gui_delete}"
+                #if player's gamemode = survival:
+                    #set slot 6 of player's current inventory to {@gui_gamemode_item} named "{@gui_gamemode_creative}"
+                #else:
+                    #set slot 6 of player's current inventory to {@gui_gamemode_item} named "{@gui_gamemode_survival}"
+                set slot 6 of player's current inventory to {@gui_2b2tworld_item} named "{@gui_2b2tworld}"
+                if {privateworld::player::%player%::*} is set:
+                    clear {privateworld::player::%player%::*}
+
+                set slot 12 of player's current inventory to diamond sword named "&rKit"
+                set slot 14 of player's current inventory to anvil named "&rKitedit"
+
+                loop all players:
+                    if player != loop-player:
+                        add loop-player to {privateworld::player::%player%::*}
+                set {_count} to 18
+                set {_count2} to 1
+                loop 9 time:
+                    set slot {_count} of player's current inventory to skull of {privateworld::player::%player%::%{_count2}%} named "&r&l%{privateworld::player::%player%::%{_count2}%}%"
+                    add 1 to {_count}
+                    add 1 to {_count2}
+
+                set slot 35 of player's current inventory to {@gui_exit_item} named "{@gui_exit}"
+            else:
+                open chest inventory with 1 rows named "{@prefix}" to player
+                set slot 2 of player's current inventory to {@gui_create_item} named "{@gui_create}"
+                set slot 6 of player's current inventory to {@gui_exit_item} named "{@gui_exit}"
+
+on inventory click:
+    if name of clicked inventory is "{@prefix}":
+        if event-item is {@gui_create_item} named "{@gui_create}":
+            close player's inventory
+            make player execute command "/privateworld create"
+        else if event-item is {@gui_delete_item} named "{@gui_delete}":
+            close player's inventory
+            make player execute command "/privateworld delete"
+        else if event-item is {@gui_gamemode_item} named "{@gui_gamemode_survival}":
+            close player's inventory
+            set player's gamemode to survival
+            send "{@prefix}ゲームモードを変更しました"
+        else if event-item is {@gui_gamemode_item} named "{@gui_gamemode_creative}":
+            close player's inventory
+            set player's gamemode to creative
+            set {cpvp.%player%} to 0
+            send "{@prefix}ゲームモードを変更しました"
+        else if event-item is diamond sword named "&rKit":
+            close player's inventory
+            set {cpvp.%player%} to 0
+            make player execute command "/kit"
+        else if event-item is {@gui_2b2tworld_item} named "{@gui_2b2tworld}":
+            close player's inventory
+            set {cpvp.%player%} to 0
+            make player execute command "/enderchest"
+        else if event-item is anvil named "&rKitedit":
+            close player's inventory
+            set {cpvp.%player%} to 0
+            make player execute command "/kitedit"
+        else if event-item is {@gui_exit_item} named "{@gui_exit}":
+            close player's inventory
+        else:
+            set {_boolean} to false
+            set {_number} to 0
+            set {_player} to player
+            loop {privateworld::player::%player%::*}:
+                if event-item is skull of {privateworld::player::%player%::%loop-index%} named "&r&l%{privateworld::player::%player%::%loop-index%}%":
+                    set {_boolean} to true
+                    set {_number} to loop-index
+                    set {privateworld.invite.player.%player%} to {privateworld::player::%player%::%loop-index%}
+                    clear {privateworld::player::%player%::*}
+                    send "{@prefix}%{privateworld.invite.player.%player%}%を招待しました"
+                    close player's inventory
+            if {_boolean}:
+                set {privateworld.invited.%{privateworld.invite.player.%{_player}%}%} to player
+                send "{@prefix}%{_player}%から招待が届きました" to {privateworld.invite.player.%player%}
+                send "{@prefix}20秒以内に参加してください。" to {privateworld.invite.player.%player%}
+                execute console command "tellraw %{privateworld.invite.player.%player%}% ["""",{""text"":""Click here"",""bold"":true,""color"":""green"",""clickEvent"":{""action"":""run_command"",""value"":""/privateworld join""}},{""text"":"" to join world""}]"
+                set {privateworld.%player%.boolean} to false
+                loop 20 time:
+                    wait 1 second
+                if !{privateworld.%player%.boolean}:
+                    send "{@prefix}招待を承諾しませんでした" to {privateworld.invite.player.%{_player}%}
+                clear {privateworld.invite.player.%{_player}%}
+                clear {privateworld.%player%.boolean}
+            else:
+                cancel event
+
+on command "/duel":
+    if {privateworld.world.%player%} = 1:
+        send "{@prefix}このコマンドは実行できません"
+        cancel event
+
+function premiumCheck(player: player) :: boolean:
+    set {_count} to 1
+    set {_boolean} to false
+    loop {privateworld::premium::*}:
+        if {privateworld::premium::%{_count}%} = {_player}:
+            set {_boolean} to true
+        add 1 to {_count}
+    return {_boolean}
+
+function worldclear(player:player):
+    set {cpvp.%{_player}%} to 0
+
+    execute console command "mvdelete %{private.worldname.%{_player}%}%"
+    execute console command "mvconfirm"
+
+    send "{@prefix}%{_player}%のワールドを削除しました" to console
+
+    clear {private.worldname.%{_player}%}
+    clear {privateworld.world.%{_player}%}

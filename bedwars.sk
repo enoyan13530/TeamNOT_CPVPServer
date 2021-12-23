@@ -1,0 +1,425 @@
+options:
+    prefix: &8[&d&lBedWars&r&8]&f
+
+    permission: skript.bedwars
+
+    shopmenu_name: &8[&d&lItemShop&r&8]&f
+    shopmenu_name_back: &rBack Menu
+    shopmenu_name_block: &rBlocks
+    shopmenu_name_tool: &rTools
+    shopmenu_name_armor: &rArmors
+
+    #block_cost
+    shopmenu_wool_cost: 4
+    shopmenu_wool_give: 8
+    shopmenu_wool_money: iron ingot
+
+    shopmenu_oak_cost: 8
+    shopmenu_oak_give: 8
+    shopmenu_oak_money: gold ingot
+
+    shopmenu_glass_cost: 16
+    shopmenu_glass_give: 8
+    shopmenu_glass_money: iron ingot
+
+    shopmenu_endstone_cost: 24
+    shopmenu_endstone_give: 8
+    shopmenu_endstone_money: iron ingot
+
+    #tool_cost
+    shopmenu_stonesword_cost: 10
+    shopmenu_stonesword_money: iron ingot
+
+    shopmenu_ironsword_cost: 8
+    shopmenu_ironsword_money: gold ingot
+
+    shopmenu_diamondsword_cost: 8
+    shopmenu_diamondsword_money: emerald
+
+    #armor_cost
+    shopmenu_iron_cost: 12
+    shopmenu_iron_money: gold ingot
+
+    shopmenu_diamond_cost: 8
+    shopmenu_diamond_money: emerald
+
+command /bedwars [<text>] [<text>] [<text>]:
+    trigger:
+        if sender != player:
+            send "{@prefix}プレイヤーのみ実行可能です"
+            stop
+        if arg-1 is set:
+
+            #管理者向けコマンド
+            if arg-1 = "create":
+                if !PermissionCheck(player):
+                    stop
+                if arg-2 is set:
+                    set {_boolean} to true
+                    loop {bedwars::maplist::*}:
+                        if {bedwars::maplist::%loop-index%} = arg-2:
+                            set {_boolean} to false
+                            stop loop
+                    if {_boolean}:
+                        add arg-2 to {bedwars::maplist::*}
+                        send "{@prefix} &a%arg-2% を作成しました"
+                    else:
+                        send "{@prefix}すでに &a%arg-2% が存在しています"
+                else:
+                    send "{@prefix}名前を入力してください"
+            if arg-1 = "clear":
+                if !PermissionCheck(player):
+                    stop
+                if arg-2 is set:
+                    set {_boolean} to false
+                    set {_count} to 0
+                    loop {bedwars::maplist::*}:
+                        if {bedwars::maplist::%loop-index%} = arg-2:
+                            set {_boolean} to true
+                            set {_count} to loop-index
+                            stop loop
+                    if {_boolean}:
+                        clear {bedwars::maplist::%{_count}%}
+                        clear {bedwars::%arg-2%::teamlist::*}
+                        clear {bedwars.setbed.%player%}
+                        clear {bedwars.%arg-2%.placecount}
+                        clear {bedwars.%arg-2%.maxplacecount}
+                        clear {bedwars::bed::%arg-2%::*}
+                        send "{@prefix} &a%arg-2% を削除しました"
+                    else:
+                        send "{@prefix}すでに &a%arg-2% が削除されています"
+                else:
+                    send "{@prefix}名前を入力してください"
+            if arg-1 = "addteam":
+                if !PermissionCheck(player):
+                    stop
+                if arg-2 is set:
+                    set {_boolean} to false
+                    loop {bedwars::maplist::*}:
+                        if {bedwars::maplist::%loop-index%} = arg-2:
+                            set {_boolean} to true
+                            stop loop
+                    if {_boolean}:
+                        if arg-3 is set:
+                            set {_boolean} to true
+                            loop {bedwars::%arg-2%::teamlist::*}:
+                                if {bedwars::%arg-2%::teamlist::%loop-index%} = arg-3:
+                                    set {_boolean} to false
+                            if {_boolean}:
+                                add arg-3 to {bedwars::%arg-2%::teamlist::*}
+                                send "{@prefix} &a%arg-3% を追加しました"
+                            else:
+                                send "{@prefix} &a%arg-3% がすでに追加されています"
+                        else:
+                            send "{@prefix}チーム名を入力してください"
+                    else:
+                        send "{@prefix} &a%arg-2% が存在しません"
+                else:
+                    send "{@prefix}名前を入力してください"
+
+            if arg-1 = "setbed":
+                if !PermissionCheck(player):
+                    stop
+                if arg-2 is set:
+                    set {_boolean} to false
+                    loop {bedwars::maplist::*}:
+                        if {bedwars::maplist::%loop-index%} = arg-2:
+                            set {_boolean} to true
+                            stop loop
+                    if {_boolean}:
+                        set {_count1} to 0
+                        loop {bedwars::%arg-2%::teamlist::*}:
+                            add 1 to {_count}
+                        if {_count} >= 1:
+                            if {bedwars.setbed.%player%} is not set:
+                                set {bedwars.setbed.%player%} to arg-2
+                                set {bedwars.%arg-2%.placecount} to 1
+                                loop {bedwars::%arg-2%::teamlist::*}:
+                                    add 1 to {bedwars.%arg-2%.maxplacecount}
+                                send "{@prefix} &a%{bedwars::%arg-2%::teamlist::%{bedwars.%arg-2%.placecount}%}% のベッドを設置してください"
+                            else:
+                                send "{@prefix}すべてのベッドを設置してから再度実行してください"
+                        else:
+                            send "{@prefix}チームを追加してください"
+            if arg-1 = "done":
+                if !PermissionCheck(player):
+                    stop
+                if arg-2 is set:
+                    set {_boolean} to false
+                    loop {bedwars::maplist::*}:
+                        if {bedwars::maplist::%loop-index%} = arg-2:
+                            set {_boolean} to true
+                            stop loop
+                    if {_boolean}:
+                        #clear {bedwars::maplist::%{_count}%}
+                        #clear {bedwars::%arg-2%::teamlist::*}
+                        CloneMap(arg-2)
+                    else:
+                        send "{@prefix}すべての作業が完了していません"
+            #一般コマンド
+            
+            if arg-1 = "brokenbed":
+                loop all players:
+                    BrokenBed(player,loop-player)
+            #if arg-1 = "test":
+                #loop {bedwars::maplist::*}:
+                    #send "%{bedwars::maplist::%loop-index%}%"
+            if arg-1 = "shopmenu":
+                ShopMenuGui(player)
+            #if arg-1 = "setbed":
+                #set {bedwars.setbed} to true
+                #send "{@prefix}ベッドを設置してください"
+            if arg-1 = "spawn":
+                set {_x} to player's x coord
+                set {_y} to player's y coord
+                set {_z} to player's z coord
+                add 1 to {_y}
+                loop 9 time:
+                    execute console command "summon item %{_x}% %{_y}% %{_z}% {Item:{id:""minecraft:iron_ingot"",Count:1b},PickupDelay:0}"
+                    wait 1 second
+                send "done"
+            if arg-1 = "setitemspawn":
+                if {bedwars.spawnitem1} is not set:
+                    set {bedwars.spawnitem1} to player's location
+                    add 1 to y-coord of {bedwars.spawnitem1}
+                    send "{@prefix}アイテムスポーンの設定をしました"
+                else:
+                    send "{@prefix}すでに設定されています"
+            if arg-1 = "spawnitem":
+                if {bedwars.spawnitem1} is set:
+                    loop 9 time:
+                        drop 1 iron ingot at {bedwars.spawnitem1}
+                        wait 1 second
+                    clear {bedwars.spawnitem1}
+                    send "{@prefix}スポーンしました"
+                else:
+                    send "{@prefix}値が設定されていません"
+        else:
+            send "{@prefix}コマンドを入力してください。"
+
+command /bedtest:
+    trigger:
+        stop
+        set {_location} to location of player
+        #set block at {_location} to west facing red bed head
+        #set block 3 north of the player to fence
+        set block north of {_location} to bed
+
+
+on place bed:
+    entity is player
+    if {bedwars.setbed.%player%} is not set:
+        stop
+    add location of event-block to {bedwars::bed::%{bedwars.setbed.%player%}%::*}
+    set {_x} to x coord of {bedwars::bed::%{bedwars.setbed.%player%}%::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}
+    set {_y} to y coord of {bedwars::bed::%{bedwars.setbed.%player%}%::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}
+    set {_z} to z coord of {bedwars::bed::%{bedwars.setbed.%player%}%::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}
+    set {_world} to world of {bedwars::bed::%{bedwars.setbed.%player%}%::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}
+
+    if block at location at ({_x}+1, {_y}, {_z}) in world {_world} = bed:
+        add location({_x}+1, {_y}, {_z}, {_world}) to {bedwars::bed::%{bedwars.setbed.%player%}%::*}
+    else if block at location at ({_x}-1, {_y}, {_z}) in world {_world} = bed:
+        add location({_x}+1, {_y}, {_z}, {_world}) to {bedwars::bed::%{bedwars.setbed.%player%}%::*}
+    else if block at location at ({_x}, {_y}, {_z}+1) in world {_world} = bed:
+        add location({_x}+1, {_y}, {_z}, {_world}) to {bedwars::bed::%{bedwars.setbed.%player%}%::*}
+    else if block at location at ({_x}, {_y}, {_z}-1) in world {_world} = bed:
+        add location({_x}+1, {_y}, {_z}, {_world}) to {bedwars::bed::%{bedwars.setbed.%player%}%::*}
+
+    if {bedwars.%{bedwars.setbed.%player%}%.placecount} != {bedwars.%{bedwars.setbed.%player%}%.maxplacecount}:
+        send "{@prefix}&a%{bedwars::%{bedwars.setbed.%player%}%::teamlist::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}% のベッドを設定しました"
+        add 1 to {bedwars.%{bedwars.setbed.%player%}%.placecount}
+        send "{@prefix}&a%{bedwars::%{bedwars.setbed.%player%}%::teamlist::%{bedwars.%{bedwars.setbed.%player%}%.placecount}%}% のベッドを設定してください"
+    else:
+        send "{@prefix}すべてのベッドの設定が完了しました"
+        clear {bedwars.setbed.%player%}
+
+#on inventory open:
+    #if inventory name of player's current inventory is "{@shopmenu_name}":
+
+on inventory click:
+    if name of clicked inventory is "{@shopmenu_name}":
+        cancel event
+        #if inventory name of player's current inventory is "{@shopmenu_name}":
+            #cancel event
+        if event-item is anvil named "{@shopmenu_name_back}":
+            ShopMenuGui(player)
+
+        #meingui
+        if event-item is white wool named "{@shopmenu_name_block}":
+            ShopMenuGui_Block(player)
+        else if event-item is diamond sword named "{@shopmenu_name_tool}":
+            ShopMenuGui_Tool(player)
+        else if event-item is diamond helmet named "{@shopmenu_name_armor}":
+            ShopMenuGui_Armor(player)
+        
+        #blockgui
+        else if event-item is white wool:
+            if MoneyItemCheck({@shopmenu_wool_money},{@shopmenu_wool_cost},player):
+                give {@shopmenu_wool_give} white wool to player
+        else if event-item is oak planks:
+            if MoneyItemCheck({@shopmenu_oak_money},{@shopmenu_oak_cost},player):
+                give {@shopmenu_oak_give} oak planks to player
+        else if event-item is glass:
+            if MoneyItemCheck({@shopmenu_glass_money},{@shopmenu_glass_cost},player):
+                give {@shopmenu_glass_give} glass to player
+        else if event-item is end stone:
+            if MoneyItemCheck({@shopmenu_endstone_money},{@shopmenu_endstone_cost},player):
+                give {@shopmenu_endstone_give} end stone to player
+        
+        #toolgui
+        else if event-item is stone sword:
+            if MoneyItemCheck({@shopmenu_stonesword_money},{@shopmenu_stonesword_cost},player):
+                give 1 stone sword to player
+        else if event-item is iron sword:
+            if MoneyItemCheck({@shopmenu_ironsword_money},{@shopmenu_ironsword_cost},player):
+                give 1 iron sword to player
+        else if event-item is diamond sword:
+            if MoneyItemCheck({@shopmenu_diamondsword_money},{@shopmenu_diamondsword_cost},player):
+                give 1 diamond sword to player
+        
+        #armor
+        else if event-item is iron chestplate:
+            if MoneyItemCheck({@shopmenu_iron_money},{@shopmenu_iron_cost},player):
+                #give 1 stone sword to player
+                set slot 39 of player to iron helmet
+                set slot 38 of player to iron chestplate
+                set slot 37 of player to iron leggings
+                set slot 36 of player to iron boots
+        else if event-item is diamond chestplate:
+            if MoneyItemCheck({@shopmenu_diamond_money},{@shopmenu_iron_cost},player):
+                #give 1 stone sword to player
+                set slot 39 of player to diamond helmet
+                set slot 38 of player to diamond chestplate
+                set slot 37 of player to diamond leggings
+                set slot 36 of player to diamond boots
+
+on damage of villager:
+    if name of victim is "Shop":
+        cancel event
+        ShopMenuGui(attacker)
+
+on rightclick on villager:
+    cancel event
+    ShopMenuGui(player)
+
+on place bed:
+    stop
+    if {bedwars.setbed} is not set:
+        stop
+    entity is player
+    #if player = "enoyan":
+    set {bedwars.bed} to location of event-block
+    set {_x} to x coord of {bedwars.bed}
+    set {_y} to y coord of {bedwars.bed}
+    set {_z} to z coord of {bedwars.bed}
+    set {_world} to world of {bedwars.bed}
+
+    set {bedwars.placebedplayer} to player
+
+    if block at location at ({_x}+1, {_y}, {_z}) in world {_world} = bed:
+        set {bedwars.bed2} to location({_x}+1, {_y}, {_z}, {_world})
+    else if block at location at ({_x}-1, {_y}, {_z}) in world {_world} = bed:
+        set {bedwars.bed2} to location({_x}-1, {_y}, {_z}, {_world})
+    else if block at location at ({_x}, {_y}, {_z}+1) in world {_world} = bed:
+        set {bedwars.bed2} to location({_x}, {_y}, {_z}+1, {_world})
+    else if block at location at ({_x}, {_y}, {_z}-1) in world {_world} = bed:
+        set {bedwars.bed2} to location({_x}, {_y}, {_z}-1, {_world})
+
+    send "{@prefix}設定しました"
+    #send "%{bedwars.bed}%"
+    clear {bedwars.setbed}
+
+on break bed:
+    stop
+    entity is player
+    if player = {bedwars.placebedplayer}:
+        cancel event
+        stop
+    #if player = "enoyan":
+    if location of event-block = {bedwars.bed} or {bedwars.bed2}:
+        #BreakBed(player)
+        #set {_player} to "enoyan"
+        BreakBed(player, {bedwars.placebedplayer})
+        BrokenBed(player, {bedwars.placebedplayer})
+        clear {bedwars.bed}
+        clear {bedwars.bed2}
+        clear {bedwars.placebedplayer}
+
+on break bed:
+    stop
+    entity is player
+    #BrokenBed(player)
+    #BreakBed(player)
+
+#ShopGui
+function ShopMenuGui(player:player):
+    play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 1 at {_player} for {_player}
+    open chest inventory with 1 rows named "{@shopmenu_name}" to {_player}
+    set slot 0 of {_player}'s current inventory to white wool named "{@shopmenu_name_block}"
+    set slot 1 of {_player}'s current inventory to diamond sword named "{@shopmenu_name_tool}"
+    set slot 2 of {_player}'s current inventory to diamond helmet named "{@shopmenu_name_armor}"
+
+function ShopMenuGui_Block(player:player):
+    play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 1 at {_player} for {_player}
+    open chest inventory with 1 rows named "{@shopmenu_name}" to {_player}
+    set slot 0 of {_player}'s current inventory to {@shopmenu_wool_give} white wool with lore "cost {@shopmenu_wool_cost} {@shopmenu_wool_money}"
+    set slot 1 of {_player}'s current inventory to {@shopmenu_oak_give} oak planks with lore "cost {@shopmenu_oak_cost} {@shopmenu_oak_money}"
+    set slot 2 of {_player}'s current inventory to {@shopmenu_glass_give} glass with lore "cost {@shopmenu_glass_cost} {@shopmenu_glass_money}"
+    set slot 3 of {_player}'s current inventory to {@shopmenu_endstone_give} end stone with lore "cost {@shopmenu_endstone_cost} {@shopmenu_endstone_money}"
+    set slot 8 of {_player}'s current inventory to anvil named "{@shopmenu_name_back}"
+
+function ShopMenuGui_Tool(player:player):
+    play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 1 at {_player} for {_player}
+    open chest inventory with 1 rows named "{@shopmenu_name}" to {_player}
+    set slot 0 of {_player}'s current inventory to stone Sword with lore "cost {@shopmenu_stonesword_cost} {@shopmenu_stonesword_money}"
+    set slot 1 of {_player}'s current inventory to iron sword with lore "cost {@shopmenu_ironsword_cost} {@shopmenu_ironsword_money}"
+    set slot 2 of {_player}'s current inventory to diamond sword with lore "cost {@shopmenu_diamondsword_cost} {@shopmenu_diamondsword_money}"
+    set slot 8 of {_player}'s current inventory to anvil named "{@shopmenu_name_back}"
+
+function ShopMenuGui_Armor(player:player):
+    play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 1 at {_player} for {_player}
+    open chest inventory with 1 rows named "{@shopmenu_name}" to {_player}
+    set slot 0 of {_player}'s current inventory to iron chestplate with lore "cost {@shopmenu_iron_cost} {@shopmenu_iron_money}"
+    set slot 1 of {_player}'s current inventory to diamond chestplate with lore "cost {@shopmenu_diamond_cost} {@shopmenu_diamond_money}"
+    set slot 8 of {_player}'s current inventory to anvil named "{@shopmenu_name_back}"
+
+function MoneyItemCheck(item:item, count1:number, player:player) :: boolean:
+    if {_player} has {_count1} of {_item}:
+        play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 2 at {_player} for {_player}
+        loop {_count1} time:
+            remove {_item} from {_player}'s inventory
+        send "{@prefix}%{_item}% を %{_count1}% 個 使用しました" to {_player}
+        return true
+    play sound "BLOCK_NOTE_PLING" with volume 100 and pitch 0.5 at {_player} for {_player}
+    send "{@prefix}購入するには %{_item}% が %{_count1}% 個必要です" to {_player}
+    return false
+
+function BrokenBed(player:player, target:player):
+    send "{@prefix}&4%{_player} %がベッドが破壊されました" to {_target}
+    #loop all players:
+    send {_target} title "&4&lベッドが破壊されました" with subtitle "&4%{_player}% が破壊しました" for 4 seconds
+    #play sound "ENTITY_ENDERDRAGON_GROWL" with volume 100 and pitch 2 at loop-player for loop-player
+    #play sound "ENTITY_ENDERDRAGON_AMBIENT" with volume 100 and pitch 1 at loop-player for loop-player
+    play sound "ENTITY_WITHER_DEATH" with volume 100 and pitch 1 at {_target} for {_target}
+
+function BreakBed(player:player, target:player):
+    loop all players:
+        if loop-player != {_target}:
+            send "{@prefix}&4%{_player}% が &a%{_target}% のベッドを破壊しました" to loop-player
+            #play sound "ENTITY_ENDERDRAGON_GROWL" with volume 100 and pitch 2 at loop-player for loop-player
+            play sound "ENTITY_ENDERDRAGON_AMBIENT" with volume 100 and pitch 1 at loop-player for loop-player
+            #play sound "ENTITY_WITHER_DEATH" with volume 100 and pitch 1 at loop-player for loop-player
+
+#処理用関数
+function PermissionCheck(player:player) :: boolean:
+    if {_player} doesn't have permission "{@permission}":
+        send "{@prefix}権限がないため実行できません" to {_player}
+        return false
+    return true
+
+function CloneMap(map:text):
+    set {_mapbu} to "%{_map}%_backup"
+    execute console command "mv clone %{_map}% %{_mapbu}%"
+    #wait 4 second
+    execute console command "mv modify set alias %{_mapbu}% %{_mapbu}%"
+    

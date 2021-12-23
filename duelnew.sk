@@ -1,0 +1,787 @@
+#=========================================
+#
+#          Crystal PVP専用Skript
+#
+#           MultiVerseCoreと併用
+#
+#            Create by enoyan
+#
+#=========================================
+
+options:
+	prefix: &8[&4&lDUEL(β版)&r&8]&f
+
+	normal_world: duel1
+
+	flat_world: duel2
+
+	gui_mapname_normal: &r&lNormal&r
+	gui_mapname_normal_item: bedrock
+
+	gui_mapname_flat: &r&lFlat&r
+	gui_mapname_flat_item: bedrock
+
+	gui_mapname_nether: &r&lNether&r
+	gui_mapname_nether_item: netherrack
+
+	gui_mapname_nether_00: &r&lNether_00&r
+	gui_mapname_nether_00_item: obsidian
+
+	gui_mapname_nether_stair: &r&lNether_Stair&r
+	gui_mapname_nether_stair_item: obsidian
+
+	gui_mapname_nether_jp00: &r&lNether_jp00&r
+	gui_mapname_nether_jp00_item: obsidian
+
+	gui_spec_name: &a&lSpec
+	gui_spec_enable: &r&lBattle has begun
+	gui_spec_disable: &r&lBattle has ended
+
+command /duel [<text>] [<text>]:
+    trigger:
+        if arg-1 is set:
+            if arg-1 is "accept":
+                if {duelnewplayer2::1} = player:
+                    send "{@prefix}ゲームを開始します" to {duelnewplayer1::1} and {duelnewplayer2::1}
+                    if {duelnewworld::1} = "flat":
+                        set {duelnew.location.x1} to -48.5
+                        set {duelnew.location.y} to 4
+                        set {duelnew.location.z1} to 48.5
+                        set {duelnew.location.x2} to 48.5
+                        set {duelnew.location.z2} to -48.5
+                        set {duelnew::duelworld::1} to "duel2"
+                    else if {duelnewworld::1} = "nether":
+                        set {duelnew.location.x1} to 24
+                        set {duelnew.location.y} to 64
+                        set {duelnew.location.z1} to 24
+                        set {duelnew.location.x2} to -24
+                        set {duelnew.location.z2} to -24
+                        set {duelnew::duelworld::1} to "duel3"
+                    else if {duelnewworld::1} = "nether00":
+                        set {duelnew.location.x1} to 15
+                        set {duelnew.location.y} to 120
+                        set {duelnew.location.z1} to 15
+                        set {duelnew.location.x2} to -15
+                        set {duelnew.location.z2} to -15
+                        set {duelnew::duelworld::1} to "duel4"
+                    else if {duelnewworld::1} = "stair":
+                        set {duelnew.location.x1} to 15.5
+                        set {duelnew.location.y} to 114
+                        set {duelnew.location.z1} to 6.5
+                        set {duelnew.location.x2} to 15.5
+                        set {duelnew.location.z2} to 19.5
+                        set {duelnew::duelworld::1} to "duel5"
+                    else if {duelnewworld::1} = "netherjp00":
+                        set {duelnew.location.x1} to -30
+                        set {duelnew.location.y} to 120
+                        set {duelnew.location.z1} to 0
+                        set {duelnew.location.x2} to 30
+                        set {duelnew.location.z2} to 0
+                        set {duelnew::duelworld::1} to "duel6"
+                    else:
+                        set {duelnew.location.x1} to 49.2
+                        set {duelnew.location.y} to 5
+                        set {duelnew.location.z1} to -49.2
+                        set {duelnew.location.x2} to -49.2
+                        set {duelnew.location.z2} to 49.2
+                        set {duelnew::duelworld::1} to "duel1"
+
+                    execute console command "gamemode sp %{duelnewplayer1::1}%"
+                    execute console command "gamemode sp %{duelnewplayer2::1}%"
+
+                    execute console command "mvtp %{duelnewplayer1::1}% %{duelnew::duelworld::1}%"
+                    execute console command "mvtp %{duelnewplayer2::1}% %{duelnew::duelworld::1}%"
+
+                    execute console command "mv modify set difficulty 3 %{duelnew::duelworld::1}%"
+                    
+                    wait 2.5 tick
+
+                    teleport {duelnewplayer1::1} to location at ({duelnew.location.x1}, {duelnew.location.y}, {duelnew.location.z1})
+                    teleport {duelnewplayer2::1} to location at ({duelnew.location.x2}, {duelnew.location.y}, {duelnew.location.z2})
+
+                    execute console command "gamemode s %{duelnewplayer1::1}%"
+                    execute console command "gamemode s %{duelnewplayer2::1}%"
+
+                    set {cpvp.%{duelnewplayer1::1}%} to 1
+                    set {cpvp.%{duelnewplayer2::1}%} to 1
+                    
+                    wait 10 tick
+
+                    set {_count} to 3
+                    loop 3 time:
+                        #teleport {duelnewplayer1::1} to location at ({duelnew.location.x1}, {duelnew.location.x1}, {duelnew.location.x1}) in world {duelnew::duelworld::1}
+                        #teleport {duelnewplayer2::1} to location at ({duelnew.location.x2}, {duelnew.location.x2}, {duelnew.location.x2}) in world {duelnew::duelworld::1}
+                        teleport {duelnewplayer1::1} to location at ({duelnew.location.x1}, {duelnew.location.y}, {duelnew.location.z1})
+                        teleport {duelnewplayer2::1} to location at ({duelnew.location.x2}, {duelnew.location.y}, {duelnew.location.z2})
+                        send "{@prefix}残り%{_count}%秒で開始" to {duelnewplayer1::1} and {duelnewplayer2::1}
+                        add -1 to {_count}
+                        wait 1 second
+                    
+                    teleport {duelnewplayer1::1} to location at ({duelnew.location.x1}, {duelnew.location.x1}, {duelnew.location.x1}) in world {duelnew::duelworld::1}
+                    teleport {duelnewplayer2::1} to location at ({duelnew.location.x2}, {duelnew.location.x2}, {duelnew.location.x2}) in world {duelnew::duelworld::1}
+                    send "{@prefix}スタート" to {duelnewplayer1::1} and {duelnewplayer2::1}
+                    set {duelnew::gamestatus::1} to "start"
+
+                    clear {duelnew.location.x1}
+                    clear {duelnew.location.y1}
+                    clear {duelnew.location.z1}
+                    clear {duelnew.location.x2}
+                    clear {duelnew.location.y2}
+                    clear {duelnew.location.z2}
+                
+                else:
+                    set {_count} to 2
+                    loop 8 time:
+                        if {duelnewplayer2::%{_count}%} = player:
+                            send "{@prefix}ゲームを開始します" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+                            send "{@prefix}しばらくお待ちください" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+                            if {duelnewworld::%{_count}%} = "flat":
+                                set {duelnew.location.%{_count}%.x1} to -48.5
+                                set {duelnew.location.%{_count}%.y} to 4
+                                set {duelnew.location.%{_count}%.z1} to 48.5
+                                set {duelnew.location.%{_count}%.x2} to 48.5
+                                set {duelnew.location.%{_count}%.z2} to -48.5
+                                set {_duelnew.cloneworld} to "duel2"
+                            else if {duelnewworld::%{_count}%} = "nether":
+                                set {duelnew.location.%{_count}%.x1} to 24
+                                set {duelnew.location.%{_count}%.y} to 64
+                                set {duelnew.location.%{_count}%.z1} to 24
+                                set {duelnew.location.%{_count}%.x2} to -24
+                                set {duelnew.location.%{_count}%.z2} to -24
+                                set {_duelnew.cloneworld} to "duel3"
+                            else if {duelnewworld::%{_count}%} = "nether00":
+                                set {duelnew.location.%{_count}%.x1} to 15
+                                set {duelnew.location.%{_count}%.y} to 120
+                                set {duelnew.location.%{_count}%.z1} to 15
+                                set {duelnew.location.%{_count}%.x2} to -15
+                                set {duelnew.location.%{_count}%.z2} to -15
+                                set {_duelnew.cloneworld} to "duel4"
+                            else if {duelnewworld::%{_count}%} = "stair":
+                                set {duelnew.location.%{_count}%.x1} to 15
+                                set {duelnew.location.%{_count}%.y} to 114
+                                set {duelnew.location.%{_count}%.z1} to 6
+                                set {duelnew.location.%{_count}%.x2} to 15
+                                set {duelnew.location.%{_count}%.z2} to 19
+                                set {_duelnew.cloneworld} to "duel5"
+                            else if {duelnewworld::%{_count}%} = "netherjp00":
+                                set {duelnew.location.%{_count}%.x1} to -30
+                                set {duelnew.location.%{_count}%.y} to 120
+                                set {duelnew.location.%{_count}%.z1} to 0
+                                set {duelnew.location.%{_count}%.x2} to 30
+                                set {duelnew.location.%{_count}%.z2} to 0
+                                set {_duelnew.cloneworld} to "duel6"
+                            else:
+                                set {duelnew.location.%{_count}%.x1} to 49.2
+                                set {duelnew.location.%{_count}%.y} to 5
+                                set {duelnew.location.%{_count}%.z1} to -49.2
+                                set {duelnew.location.%{_count}%.x2} to -49.2
+                                set {duelnew.location.%{_count}%.z2} to 49.2
+                                set {_duelnew.cloneworld} to "duel1"
+
+                            #{duennew.world2_clone}
+                            set {duelnew::duelworld::%{_count}%} to worldclone({_duelnew.cloneworld},player)
+
+                            execute console command "gamemode sp %{duelnewplayer1::%{_count}%}%"
+                            execute console command "gamemode sp %{duelnewplayer2::%{_count}%}%"
+
+                            execute console command "mvtp %{duelnewplayer1::%{_count}%}% %{duelnew::duelworld::%{_count}%}%"
+                            execute console command "mvtp %{duelnewplayer2::%{_count}%}% %{duelnew::duelworld::%{_count}%}%"
+
+                            execute console command "mv modify set difficulty 3 %{duelnew::duelworld::%{_count}%}%"
+                            
+                            wait 2.5 tick
+
+                            teleport {duelnewplayer1::%{_count}%} to location at ({duelnew.location.%{_count}%.x1}, {duelnew.location.%{_count}%.y}, {duelnew.location.%{_count}%.z1})
+                            teleport {duelnewplayer2::%{_count}%} to location at ({duelnew.location.%{_count}%.x2}, {duelnew.location.%{_count}%.y}, {duelnew.location.%{_count}%.z2})
+
+                            execute console command "gamemode s %{duelnewplayer1::%{_count}%}%"
+                            execute console command "gamemode s %{duelnewplayer2::%{_count}%}%"
+
+                            set {cpvp.%{duelnewplayer1::%{_count}%}%} to 1
+                            set {cpvp.%{duelnewplayer2::%{_count}%}%} to 1
+                            
+                            wait 10 tick
+
+                            set {_time} to 3
+                            loop 3 time:
+                                teleport {duelnewplayer1::%{_count}%} to location at ({duelnew.location.%{_count}%.x1}, {duelnew.location.%{_count}%.y}, {duelnew.location.%{_count}%.z1})
+                                teleport {duelnewplayer2::%{_count}%} to location at ({duelnew.location.%{_count}%.x2}, {duelnew.location.%{_count}%.y}, {duelnew.location.%{_count}%.z2})
+                                send "{@prefix}残り%{_time}%秒で開始" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+                                add -1 to {_time}
+                                wait 1 second
+                            
+                            send "{@prefix}スタート" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+                            set {duelnew::gamestatus::%{_count}%} to "start"
+
+                            clear {duelnew.location.%{_count}%.x1}
+                            clear {duelnew.location.%{_count}%.y1}
+                            clear {duelnew.location.%{_count}%.z1}
+                            clear {duelnew.location.%{_count}%.x2}
+                            clear {duelnew.location.%{_count}%.y2}
+                            clear {duelnew.location.%{_count}%.z2}
+
+                            stop
+                        
+                        add 1 to {_count}
+                
+                    send "{@prefix}マッチングしていません"
+                    stop
+
+            if arg-1 is "end":
+                if player = {duelnewplayer1::1} or {duelnewplayer2::1}:
+                    set {duelnew::gamestatus::1} to "end"
+                    send "{@prefix}バトルが終了しました" to {duelnewplayer1::1} and {duelnewplayer2::1}
+                    send "{@prefix}ロビーにテレポートします" to {duelnewplayer1::1} and {duelnewplayer2::1}
+
+                    if {duelnew.deathplayer.1} = {duelnewplayer1::1}:
+                        set {duelnew.winplayer} to {duelnewplayer2::1}
+                    else:
+                        set {duelnew.winplayer} to {duelnewplayer1::1}
+                    set {_health} to health of {duelnew.winplayer}
+                    set {_totem} to 0
+                    set {_totem2} to 0
+                    loop integers between 0 and 41:
+                        if slot loop-integer of {duelnew.winplayer}'s inventory is totem of undying:
+                            add 1 to {_totem}
+                        if slot loop-integer of {duelnew.deathplayer.1}'s inventory is totem of undying:
+                            add 1 to {_totem2}
+                    broadcast "{@prefix}Duel Ended. &6&l%{duelnew.deathplayer.1}%&r &7&lvs&r &6&l%{duelnew.winplayer}%&r, &6&l%{duelnew.winplayer}%&r win. &dHealth is &l♥%{_health}% &r&dand &l%{_totem}% totem!"
+                    if {_totem2} >= 1:
+                        broadcast "{@prefix}&6&l%{duelnew.deathplayer.1}%&r has &d&l%{_totem2}% &r&dtotem."
+                    clear {duelnew.deathplayer}
+                    clear {duelnew.winplayer}
+
+                    wait 6 tick
+                    execute console command "clear %{duelnewplayer1::1}%"
+                    execute console command "clear %{duelnewplayer2::1}%"
+                    wait 1 second
+                    teleport {duelnewplayer1::1} to {cpvplobby}
+                    teleport {duelnewplayer2::1} to {cpvplobby}
+
+                    set {cpvp.%{duelnewplayer1::1}%} to 0
+                    set {cpvp.%{duelnewplayer2::1}%} to 0
+                    worldreset({duelnewworld::1})
+
+                    wait 2 second
+
+                    if {duelnewplayer1::1} is not in world "cpvplobby":
+                        teleport {duelnewplayer1::1} to {cpvplobby}
+                    if {duelnewplayer2::1} is not in world "cpvplobby":
+                        teleport {duelnewplayer1::1} to {cpvplobby}
+
+                    #execute console command "duelwreset %{duelnewworld::1}%"
+
+                    wait 10 tick
+
+                    clear {duelnew::duelworld::1}
+
+                    clear {duelnew::gamestatus::1}
+                    clear {duelnewplayer1::1}
+                    clear {duelnewplayer2::1}
+                    clear {duelnewworld::1}
+                
+                else:
+                    set {_count} to 2
+                    loop 8 time:
+                        if player = {duelnewplayer1::%{_count}%} or {duelnewplayer2::%{_count}%}:
+                            set {duelnew::gamestatus::%{_count}%} to "end"
+                            send "{@prefix}バトルが終了しました" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+                            send "{@prefix}ロビーにテレポートします" to {duelnewplayer1::%{_count}%} and {duelnewplayer2::%{_count}%}
+
+                            if {duelnew.deathplayer.%{_count}%} = {duelnewplayer1::%{_count}%}:
+                                set {duelnew.winplayer} to {duelnewplayer2::%{_count}%}
+                            else:
+                                set {duelnew.winplayer} to {duelnewplayer1::%{_count}%}
+                            set {_health} to health of {duelnew.winplayer}
+                            set {_totem} to 0
+                            set {_totem2} to 0
+                            loop integers between 0 and 41:
+                                if slot loop-integer of {duelnew.winplayer}'s inventory is totem of undying:
+                                    add 1 to {_totem}
+                                if slot loop-integer of {duelnew.deathplayer.%{_count}%}'s inventory is totem of undying:
+                                    add 1 to {_totem2}
+                            broadcast "{@prefix}Duel Ended. &6&l%{duelnew.deathplayer.%{_count}%}%&r &7&lvs&r &6&l%{duelnew.winplayer}%&r, &6&l%{duelnew.winplayer}%&r win. &dHealth is &l♥%{_health}% &r&dand &l%{_totem}% totem!"
+                            if {_totem2} >= 1:
+                                broadcast "{@prefix}&6&l%{duelnew.deathplayer.%{_count}%}%&r has &d&l%{_totem2}% &r&dtotem."
+                            clear {duelnew.deathplayer.%{_count}%}
+                            clear {duelnew.winplayer}
+
+                            wait 6 tick
+                            execute console command "clear %{duelnewplayer1::%{_count}%}%"
+                            execute console command "clear %{duelnewplayer2::%{_count}%}%"
+                            wait 1 second
+                            teleport {duelnewplayer1::%{_count}%} to {cpvplobby}
+                            teleport {duelnewplayer2::%{_count}%} to {cpvplobby}
+
+                            set {cpvp.%{duelnewplayer1::%{_count}%}%} to 0
+                            set {cpvp.%{duelnewplayer2::%{_count}%}%} to 0
+
+                            if {duelnewplayer1::%{_count}%} is not in world "cpvplobby":
+                                teleport {duelnewplayer1::%{_count}%} to {cpvplobby}
+                            if {duelnewplayer2::%{_count}%} is not in world "cpvplobby":
+                                teleport {duelnewplayer2::%{_count}%} to {cpvplobby}
+
+                            execute console command "mvdelete %{duelnew::duelworld::%{_count}%}%"
+                            #wait 1 second
+                            execute console command "mvconfirm"
+
+                            clear {duelnew::duelworld::%{_count}%}
+
+                            clear {duelnew::gamestatus::%{_count}%}
+                            clear {duelnewplayer1::%{_count}%}
+                            clear {duelnewplayer2::%{_count}%}
+                            clear {duelnewworld::%{_count}%}
+                            clear {duelnew::duelworld::%{_count}%}
+
+                            stop
+                        add 1 to {_count}
+
+                    send "{@prefix}このコマンドは実行できません"
+
+            else if arg-1 is "spec":
+                if player = {duelnewplayer1::2} or {duelnewplayer2::2} or {duelnewplayer1::1} or {duelnewplayer2::1}:
+                    send "{@prefix}現在戦闘中のため実行できません"
+                    stop
+                open chest inventory with 2 rows named "{@gui_spec_name}" to player
+                set {_count0} to 0
+                set {_count1} to 1
+                set {_count2} to 9
+                loop 9 time:
+                    if {duelnew::gamestatus::%{_count1}%} = "start":
+                        set slot {_count0} of player's current inventory to lime wool named "{@gui_spec_enable}" with lore "%{duelnewplayer1::%{_count1}%}% vs %{duelnewplayer2::%{_count1}%}%"
+                        set slot {_count2} of player's current inventory to grass named "&r&l%{duelnewworld::%{_count1}%}%"                    
+                    else:
+                        set slot {_count0} of player's current inventory to red wool named "{@gui_spec_disable}"
+                        set slot {_count2} of player's current inventory to grass named "&r&lここにワールド名が表示されます" 
+                    add 1 to {_count0}
+                    add 1 to {_count1}
+                    add 1 to {_count2}
+                #if {duelnew::gamestatus::2} = "start":
+                    #set slot 1 of player's current inventory to lime wool named "{@gui_spec_enable}" with lore "%{duelnewplayer1::2}% vs %{duelnewplayer2::2}%"
+                    #set slot 10 of player's current inventory to grass named "&r&l%{duelnewworld::2}%"  
+                #else:
+                    #set slot 1 of player's current inventory to red wool named "{@gui_spec_disable}"
+                    #set slot 10 of player's current inventory to grass named "&r&lここにワールド名が表示されます" 
+
+            else:
+                if arg-1 is player:
+                    send "{@prefix}自分と戦うことはできません"
+                    stop
+                loop all players:
+                    if name of loop-player is arg-1:
+                        if {cpvp.%arg-1%} = 1:
+                            send "{@prefix}相手が戦場にいるため送ることができません"
+                            stop
+                        
+                        if {duelnewplayer1::1} is not set:
+                            if loop-player = {duelnewplayer1::2} or {duelnewplayer2::2}:
+                                send "{@prefix}すでにマッチングしているため送ることができません"
+                                stop
+                            if player = {duelnewplayer1::2} or {duelnewplayer2::2}:
+                                send "{@prefix}すでにマッチングしているため送ることができません"
+                                stop
+                            set {duelnewplayer1::1} to player
+                            set {duelnewplayer2::1} to loop-player
+                            set {duelnewplayer.%player%} to 1
+                            set {duelnewplayer.%loop-player%} to 1
+
+                            set {duelnewworld::1} to "normal"
+                            if arg-2 is set:
+                                if arg-2 is "flat":
+                                    set {duelnewworld::1} to "flat"
+                                else if arg-2 is "nether":
+                                    set {duelnewworld::1} to "nether"
+                                else if arg-2 is "nether00":
+                                    set {duelnewworld::1} to "nether00"
+                                else if arg-2 is "stair":
+                                    set {duelnewworld::1} to "stair"
+                                else if arg-2 is "netherjp00":
+                                    set {duelnewworld::1} to "netherjp00"
+                            send "{@prefix}%{duelnewplayer2::1}%とマッチングしました" to {duelnewplayer1::1}
+                            send "{@prefix}相手の承認待ちです" to {duelnewplayer1::1}
+                            send "{@prefix}20秒以内に相手の承認がない場合無効になります" to {duelnewplayer1::1}
+
+                            send "{@prefix}%{duelnewplayer1::1}%とマッチングしました" to {duelnewplayer2::1}
+                            send "{@prefix}world:%{duelnewworld::1}%" to {duelnewplayer2::1}
+                            #send "{@prefix}/accept でduelを開始します" to {duelnewplayer2::1}
+                            send "{@prefix}20秒以内に承認しない場合無効になります" to {duelnewplayer2::1}
+                            execute console command "tellraw %{duelnewplayer2::1}% ["""",{""text"":""Click here"",""bold"":true,""color"":""green"",""clickEvent"":{""action"":""run_command"",""value"":""/duel accept""}},{""text"":"" to start duel""}]"
+                            set {duelnew::found::1} to 1
+                            
+                            #wait 20 second
+                            set {_boolean} to false
+                            loop 20 time:
+                                loop 20 time:
+                                    if {duelnew::gamestatus::1} = "start":
+                                        set {_boolean} to true
+                                    wait 1 tick
+                            if !{_boolean}:
+                                send "{@prefix}相手が承認しませんでした"
+                                clear {duelnewplayer1::1}
+                                clear {duelnewplayer2::1}
+                                clear {duelnewplayer.%player%}
+                                clear {duelnewplayer.%loop-player%}
+                                clear {duelnew::found::1}
+
+                                stop
+
+                        else:
+                            set {_count1} to 2
+                            loop 8 time:
+                                if {duelnewplayer1::%{_count1}%} is not set:
+                                    set {_count2} to 1
+                                    loop 9 time:
+                                        if loop-player = {duelnewplayer1::%{_count2}%} or {duelnewplayer2::%{_count2}%}:
+                                            send "{@prefix}すでにマッチングしているため送ることができません"
+                                            stop
+                                        if player = {duelnewplayer1::%{_count2}%} or {duelnewplayer2::%{_count2}%}:
+                                            send "{@prefix}すでにマッチングしているため送ることができません"
+                                            stop
+                                        add 1 to {_count2}
+                                    set {duelnewplayer1::%{_count1}%} to player
+                                    set {duelnewplayer2::%{_count1}%} to loop-player
+                                    set {duelnewplayer.%player%} to 1
+                                    set {duelnewplayer.%loop-player%} to 1
+
+                                    set {duelnewworld::%{_count1}%} to "normal"
+                                    if arg-2 is set:
+                                        if arg-2 is "flat":
+                                            set {duelnewworld::%{_count1}%} to "flat"
+                                        else if arg-2 is "nether":
+                                            set {duelnewworld::%{_count1}%} to "nether"
+                                        else if arg-2 is "nether00":
+                                            set {duelnewworld::%{_count1}%} to "nether00"
+                                        else if arg-2 is "stair":
+                                            set {duelnewworld::%{_count1}%} to "stair"
+                                        else if arg-2 is "netherjp00":
+                                            set {duelnewworld::%{_count1}%} to "netherjp00"
+                                    send "{@prefix}%{duelnewplayer2::%{_count1}%}%とマッチングしました" to {duelnewplayer1::%{_count1}%}
+                                    send "{@prefix}相手の承認待ちです" to {duelnewplayer1::%{_count1}%}
+                                    send "{@prefix}20秒以内に相手の承認がない場合無効になります" to {duelnewplayer1::%{_count1}%}
+
+                                    send "{@prefix}%{duelnewplayer1::%{_count1}%}%とマッチングしました" to {duelnewplayer2::%{_count1}%}
+                                    send "{@prefix}world:%{duelnewworld::%{_count1}%}%" to {duelnewplayer2::%{_count1}%}
+                                    send "{@prefix}20秒以内に承認しない場合無効になります" to {duelnewplayer2::%{_count1}%}
+                                    execute console command "tellraw %{duelnewplayer2::%{_count1}%}% ["""",{""text"":""Click here"",""bold"":true,""color"":""green"",""clickEvent"":{""action"":""run_command"",""value"":""/duel accept""}},{""text"":"" to start duel""}]"
+                                    set {duelnew::found::%{_count1}%} to 1
+                                    
+                                    #wait 20 second
+                                    set {_boolean} to false
+                                    loop 20 time:
+                                        loop 20 time:
+                                            if {duelnew::gamestatus::%{_count1}%} = "start":
+                                                set {_boolean} to true
+                                            wait 1 tick
+                                        #wait 1 second
+
+                                    if !{_boolean}:
+                                        send "{@prefix}相手が承認しませんでした"
+                                        clear {duelnewplayer1::%{_count1}%}
+                                        clear {duelnewplayer2::%{_count1}%}
+                                        clear {duelnewplayer.%player%}
+                                        clear {duelnewplayer.%loop-player%}
+                                        clear {duelnew::found::%{_count1}%}
+
+                                    stop
+
+                                add 1 to {_count1}
+                            #broadcast "%{_count}%"
+                            send "{@prefix}枠がすべて埋まっています。 しばらく待ってから再度実行して下さい。"
+                            stop
+
+                    #else:
+                        #send "{@prefix}見つかりませんでした"
+
+                if {duelnew::found::1} != 1:
+                    send "{@prefix}プレイヤーが見つかりませんでした" to player
+                        
+                        #clear {duelnewplayer1::1}
+                        #clear {duelnewplayer2::1}
+                        #clear {duelnewplayer.%player%}
+                        #clear {duelnewplayer.%loop-player%}
+        else:
+            #send "{@prefix}プレイヤー名を入力してください"
+
+            open chest inventory with 3 rows named "{@prefix}" to player
+
+            if {duel::matching::%player%::*} is set:
+                clear {duel::matching::%player%::*}
+            
+            loop all players:
+                if player != loop-player:
+                    add loop-player to {duel::matching::%player%::*}
+            
+            set {_count} to 0
+            loop {duel::matching::%player%::*}:
+                set slot {_count} of player's current inventory to skull of {duel::matching::%player%::%loop-index%} named "&r&l%{duel::matching::%player%::%loop-index%}%"
+                add 1 to {_count}
+            
+            set slot 18 of player's current inventory to {@gui_mapname_normal_item} named "{@gui_mapname_normal}" with lore "Default Selected"
+            set slot 19 of player's current inventory to {@gui_mapname_flat_item} named "{@gui_mapname_flat}"
+            set slot 20 of player's current inventory to {@gui_mapname_nether_item} named "{@gui_mapname_nether}"
+            set slot 21 of player's current inventory to {@gui_mapname_nether_00_item} named "{@gui_mapname_nether_00}"
+            set slot 22 of player's current inventory to {@gui_mapname_nether_stair_item} named "{@gui_mapname_nether_stair}"
+            set slot 23 of player's current inventory to {@gui_mapname_nether_jp00_item} named "{@gui_mapname_nether_jp00}"
+
+            set {duel.setworld.%player%} to "normal"
+
+command /dtest:
+    trigger:
+        stop
+        clear {duelnew::gamestatus::1}
+        clear {duelnewplayer1::1}
+        clear {duelnewplayer2::1}
+
+#on place:
+    #stop
+    #entity is player
+    #if {duelnew::gamestatus::1} = "start":
+        #if player = {duelnewplayer1::1} or {duelnewplayer2::1}:
+            #add location of block to {duelnew::placeblock::*}
+            #add x-coord of block to {duelnew::placeblock1::x::*}
+            #add y-coord of block to {duelnew::placeblock1::y::*}
+            #add z-coord of block to {duelnew::placeblock1::z::*}
+            #add x-coord of block to {duel::block::x::*}
+            #add y-coord of block to {duel::block::y::*}
+            #add z-coord of block to {duel::block::z::*}
+            #set {_x} to x-coord of block
+            #set {_y} to y-coord of block
+            #set {_z} to z-coord of block
+            #set block at location at ({_x}, {_y}, {_z}) in world "duel1" to air
+            #broadcast "place"
+
+#on place:
+    #entity is player
+    #if player = "enoyan":
+        #add location of block to {duelnew::placeblock::*}
+        #add x-coord of block to {duelnew::placeblock1::x::*}
+        #add y-coord of block to {duelnew::placeblock1::y::*}
+        #add z-coord of block to {duelnew::placeblock1::z::*}
+
+#on death of player:
+    #stop
+    #if {duelnew::gamestatus::1} = "start":
+        #playerspecmode()
+        #if player = {duelnewplayer1::1} or {duelnewplayer2::1}:
+            #set {duelnew.deathplayer} to player
+            #make player execute command "/duel end"
+    #else:
+        #set {_count} to 2
+        #loop 8 time:
+            #if {duelnew::gamestatus::%{_count}%} = "start":
+                #playerspecmode()
+                #if player = {duelnewplayer1::%{_count}%} or {duelnewplayer2::%{_count}%}:
+                    #set {duelnew.deathplayer.%{_count}%} to player
+                    #make player execute command "/duel end"
+            #add 1 to {_count}
+    #broadcast "bypass"
+
+on death of player:
+    set {_count} to 1
+    loop 9 time:
+        if {duelnew::gamestatus::%{_count}%} = "start":
+            playerspecmode()
+            if player = {duelnewplayer1::%{_count}%} or {duelnewplayer2::%{_count}%}:
+                set {duelnew.deathplayer.%{_count}%} to player
+                make player execute command "/duel end"
+        add 1 to {_count}
+
+on inventory click:
+    if name of clicked inventory is "{@prefix}":
+        if event-item is {@gui_mapname_normal_item} named "{@gui_mapname_normal}" with lore "Default Selected":
+            cancel event
+            send "{@gui_mapname_normal} selected"
+
+            set {duel.setworld.%player%} to "normal"
+        else if event-item is {@gui_mapname_flat_item} named "{@gui_mapname_flat}":
+            cancel event
+            send "{@gui_mapname_flat} selected"
+
+            set {duel.setworld.%player%} to "flat"
+        else if event-item is {@gui_mapname_nether_item} named "{@gui_mapname_nether}":
+            cancel event
+            send "{@gui_mapname_nether} selected"
+
+            set {duel.setworld.%player%} to "nether"
+        else if event-item is {@gui_mapname_nether_00_item} named "{@gui_mapname_nether_00}":
+            cancel event
+            send "{@gui_mapname_nether_00} selected" 
+
+            set {duel.setworld.%player%} to "nether00"
+        else if event-item is {@gui_mapname_nether_stair_item} named "{@gui_mapname_nether_stair}":
+            cancel event
+            send "{@gui_mapname_nether_stair} selected" 
+
+            set {duel.setworld.%player%} to "stair"
+        else if event-item is {@gui_mapname_nether_jp00_item} named "{@gui_mapname_nether_jp00}":
+            cancel event
+            send "{@gui_mapname_nether_jp00} selected" 
+
+            set {duel.setworld.%player%} to "netherjp00"
+        else:
+            cancel event
+            
+            set {_boolean} to false
+            loop {duel::matching::%player%::*}:
+                if event-item is skull of {duel::matching::%player%::%loop-index%} named "&r&l%{duel::matching::%player%::%loop-index%}%":
+                    set {_boolean} to true
+                    set {duel.machiedplayer.%player%} to {duel::matching::%player%::%loop-index%}
+
+                    close player's inventory
+            
+            if {_boolean}:
+                make player execute command "/duel %{duel.machiedplayer.%player%}% %{duel.setworld.%player%}%"
+
+                clear {duel.machiedplayer.%player%}
+                clear {duel::matching::%player%::*}
+                clear {duel.setworld.%player%}
+
+    else if name of clicked inventory is "{@gui_spec_name}":
+        cancel event
+        set {_count} to 1
+        loop 9 time:
+            if event-item is lime wool named "{@gui_spec_enable}" with lore "%{duelnewplayer1::%{_count}%}% vs %{duelnewplayer2::%{_count}%}%":
+                set {duelnew.specmode.%player%} to true
+                execute console command "mvtp %player% %{duelnew::duelworld::%{_count}%}%"
+                wait 12 tick
+                execute console command "gamemode sp %player%"
+            add 1 to {_count}
+        #else if event-item is lime wool named "{@gui_spec_enable}" with lore "%{duelnewplayer1::2}% vs %{duelnewplayer2::2}%":
+            #execute console command "gamemode sp %player%"
+            #set {duelnew.specmode.%player%} to true
+            #execute console command "mvtp %player% %{duelnew::duelworld::2}%"
+
+command /duelwreset [<text>]:
+    trigger:
+        #stop
+        set {_world} to "normal"
+        if arg-1 is set:
+            set {_world} to arg-1
+        worldreset({_world})
+
+command /duelbreset:
+    trigger:
+        #stop
+        set {_count} to 1
+        set {_rworld} to "duel1"
+        loop {duelnew::placeblock::*}:
+            wait 1 tick
+            set block at {duelnew::placeblock::%{_count}%} to air        
+            add 1 to {_count}
+            #broadcast "%{_count}%"
+        #broadcast "test"
+        clear {duelnew::placeblock::*}
+
+command /duelblockplace:
+    trigger:
+        stop
+        if {duelnew.test.place} is not set:
+            set {duelnew.test.place} to 1
+            send "set"
+        else:
+            clear {duelnew.test.place}
+            set {_count} to 1
+            #loop {duel.placeblock} time:
+            loop {duelnew::placeblock::*}:
+                #set block {duelnew::placeblock::loop-index} to air
+                #set {_x} to {duel::block::x::%{_count}%}
+                #set {_y} to {duel::block::y::%{_count}%}
+                #set {_z} to {duel::block::z::%{_count}%}
+                set block {duelnew::placeblock::%{_count}%} to air
+                #set block at location at ({_x}, {_y}, {_z}) in world "cpvplobby" to air
+                add 1 to {_count}
+            #set block at event-location to oak wood plank
+            clear {duelnew::placeblock::*}
+            clear {duel::block::x::*}
+            clear {duel::block::y::*}
+            clear {duel::block::z::*}
+            clear {duel.placeblock}
+            send "done"
+
+on place:
+    stop
+    if {duelnew.test.place} = 1:
+        #add x-coord of block to {duel::block::x::*}
+        #add y-coord of block to {duel::block::y::*}
+        #add z-coord of block to {duel::block::z::*}
+        add location of block to {duelnew::placeblock::*}
+        #add 1 to {duel.placeblock}
+        #broadcast "place"
+
+function playerspecmode() :: boolean:
+    set {_boolean} to false
+    set {_p} to "test"
+    loop all players:
+        if {duelnew.specmode.%loop-player%}:
+            set {_boolean} to true
+            set {_p} to loop-player
+            exit loop
+    if {_boolean}:
+        clear {duelnew.specmode.%{_p}%}
+        teleport {_p} to {cpvplobby}
+        set {_p}'s gamemode to survival
+
+function worldreset(world: text):
+    #broadcast "test1"
+    set {_rworld} to "duel1"
+    set {_sworld2} to "duel_normal"
+
+    if {_world} = "flat":
+        set {_rworld} to "duel2"
+        set {_sworld2} to "duel_flat"
+    else if {_world} = "nether":
+        set {_rworld} to "duel3"
+        set {_sworld2} to "duel_nether"
+    else if {_world} = "nether00":
+        set {_rworld} to "duel4"
+        set {_sworld2} to "duel_nether_00"
+    else if {_world} = "stair":
+        set {_rworld} to "duel5"
+        set {_sworld2} to "duel_nether_stair"
+    else if {_world} = "netherjp00":
+        set {_rworld} to "duel6"
+        set {_sworld2} to "duel_nether_jp00"
+
+    execute console command "mvdelete %{_rworld}%"
+    #wait 1 second
+    execute console command "mvconfirm"
+    #wait 1 second
+    execute console command "mv clone %{_sworld2}% %{_rworld}%"
+    #wait 4 second
+    execute console command "mv modify set alias %{_rworld}% %{_rworld}%"
+
+function worldresetaaa(world: text):
+    set {_count} to 1
+    loop {duelnew::placeblock::*}:
+        #wait 1 tick
+        set block at {duelnew::placeblock::%{_count}%} to air        
+        add 1 to {_count}
+        #broadcast "%{_count}%"
+    #broadcast "test"
+    clear {duelnew::placeblock::*}
+
+function worldclone(world: text, player: player) :: text:
+    set {_rworld} to "duel1_%{_player}%"
+    set {_sworld2} to "duel_normal"
+
+    if {_world} = "flat":
+        set {_rworld} to "duel2_%{_player}%"
+        set {_sworld2} to "duel_flat"
+    else if {_world} = "nether":
+        set {_rworld} to "duel3_%{_player}%"
+        set {_sworld2} to "duel_nether"
+    else if {_world} = "nether00":
+        set {_rworld} to "duel4_%{_player}%"
+        set {_sworld2} to "duel_nether_00"
+    else if {_world} = "stair":
+        set {_rworld} to "duel5_%{_player}%"
+        set {_sworld2} to "duel_nether_stair"
+    else if {_world} = "netherjp00":
+        set {_rworld} to "duel6_%{_player}%"
+        set {_sworld2} to "duel_nether_jp00"
+
+    execute console command "mv clone %{_sworld2}% %{_rworld}%"
+    #wait 4 second
+    execute console command "mv modify set alias %{_rworld}% %{_rworld}%"
+
+    return {_rworld}

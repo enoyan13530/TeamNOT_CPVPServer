@@ -1,0 +1,89 @@
+command /crystalranking:
+	permission:skript.cpvp.crystalranking
+	permission message:&bあなたは権限がないため使えません
+	trigger:
+		send "<CrystalCountRanking>"
+		set {cpvp::crystalcountrank::*} to sorted {cpvp::crystalcountrank::*}
+		set {_count} to 1
+		set {_count2} to 1
+		loop {cpvp::crystalcountrank::*}:
+			loop {cpvp::crystalrank::player::*}:
+				if {cpvp::crystalcountrank::%{_count}%} = {cpvp.%{cpvp::crystalrank::player::%{_count2}%}%.crystal}:
+					set {_cpvp::crystalrankplayer::%{_count}%} to {cpvp::crystalrank::player::%{_count2}%}
+				add 1 to {_count2}
+			add 1 to {_count}
+			set {_count2} to 1	
+		set {_count2} to 0
+		add -1 to {_count}
+		set {_count3} to 0
+		set {_count4} to {_count} - 1
+		loop {cpvp::crystalcountrank::*}:
+			if {_cpvp::crystalrankplayer::%{_count}%} is set:
+				if {_cpvp::crystalrankplayer::%{_count}%} is set:
+					add 1 to {_count2}
+				if {_count2} <= 10:
+					send "%{_count2}%:【%{_cpvp::crystalrankplayer::%{_count}%}%】%{cpvp::crystalcountrank::%{_count}%}%"
+				if {_cpvp::crystalrankplayer::%{_count}%} = {_cpvp::crystalrankplayer::%{_count4}%}:
+					add 1 to {_count3}
+			add -1 to {_count}
+			add -1 to {_count4}
+		set {_count2} to {_count2} - {_count3}
+		send "参加人数:%{_count2}%人"
+
+command /crystalrankinglist:
+	permission:skript.cpvp.crystalranking
+	permission message:&bあなたは権限がないため使えません
+	trigger:
+		send "<CrystalCountRankingPlayerList>"
+		set {_count} to 0
+		loop {cpvp::crystalrank::player::*}:
+			add 1 to {_count}
+			send "[%{_count}%]:%{cpvp::crystalrank::player::%{_count}%}%"
+		send "合計%{_count}%人"
+
+command /crystalrankingreset:
+	permission:skript.cpvp.crystalranking.reset
+	permission message:&bあなたは権限がないため使えません
+	trigger:
+		set {crystalrankresetdelete} to 0
+		if {crystalrankresetdelete} = 1:
+			clear {cpvp::crystalrank::player::*}
+			send "削除しました" to player
+			
+		else:
+			send "削除できません" to player
+
+#crystalcount
+on damage:
+	victim is an ender crystal
+	attacker is player
+	set {_player} to attacker
+	set {_isboolean} to false
+	set {_count} to 1
+
+	#player
+	loop {cpvp::crystalrank::player::*}:
+		if {_isboolean} = false:
+			if {cpvp::crystalrank::player::%{_count}%} = {_player}:
+				set {_isboolean} to true
+			if {cpvp::crystalrank::player::%{_count}%} is set:
+				add 1 to {_count}
+	if {_isboolean} = false:
+		set {cpvp::crystalrank::player::%{_count}%} to {_player}
+		set {_isboolean} to true
+	
+	#crystal
+	set {_isboolean} to false
+	set {_count} to 1
+	loop {cpvp::crystalcountrank::*}:
+		if {_isboolean} = false:
+			if {cpvp::crystalcountrank::%{_count}%} = {cpvp.%{_player}%.crystal}:
+				if {_player}'s gamemode = survival:
+					add 1 to {cpvp.%{_player}%.crystal}
+				set {cpvp::crystalcountrank::%{_count}%} to {cpvp.%{_player}%.crystal}
+				set {_isboolean} to true
+		add 1 to {_count}
+	
+	if {_isboolean} = false:
+		add 1 to {cpvp.%{_player}%.crystal}
+		set {cpvp::crystalcountrank::%{_count}%} to {cpvp.%{_player}%.crystal}

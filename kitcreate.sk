@@ -1,0 +1,158 @@
+options:
+	prefix:&8[&l&dKitCreate&r&8]&f
+
+command /kitcreate [<text>] [<number>]:
+	trigger:
+		if arg-1 is set:
+			if arg-1 is "save":
+				if {kitcreate::inv::%player%::*} != null:
+					clear {kitcreate::inv::%player%::*}
+				add all items in player's inventory to {kitcreate::inv::%player%::*}
+				set {kitcreate.helm.%player%} to player's helmet
+				set {kitcreate.chest.%player%} to player's chestplate
+				set {kitcreate.legs.%player%} to player's legging
+				set {kitcreate.boots.%player%} to player's boots
+				set {kitcreate.off.%player%} to player's offhand
+				set {kitcreate.kit.%player%} to 1
+				clear player's inventory
+				close player's inventory
+				send "{@prefix}インベントリをセーブしました"
+			else if arg-1 is "multisave":
+				if {kitcreate.kit.%player%} = 1:
+					set {_count} to 1
+					loop 9 time:
+						add 0 to {kitcreate::savekit::%player%::*}
+					add all items in player's inventory to {kitcreate::kit1::inv::%player%::*}
+					set {kitcreate.kit1.helm.%player%} to player's helmet
+					set {kitcreate.kit1.chest.%player%} to player's chestplate
+					set {kitcreate.kit1.legs.%player%} to player's legging
+					set {kitcreate.kit1.boots.%player%} to player's boots
+					set {kitcreate.kit1.off.%player%} to player's offhand
+					set {kitcreate::savekit::%player%::1} to 1
+					clear player's inventory
+					close player's inventory
+
+					clear {kitcreate.helm.%player%}
+					clear {kitcreate.chest.%player%}
+					clear {kitcreate.legs.%player%}
+					clear {kitcreate.boots.%player%}
+					clear {kitcreate.off.%player%}
+					clear {kitcreate::inv::%player%::*}
+
+					send "{@prefix}カスタムkit[1]を作成しました"
+					set {kitcreate.kit.%player%} to 2
+				else if {kitcreate.kit.%player%} = 2:
+					if arg-2 is set:
+						set {_isboolean} to "false"
+						set {_count} to 1
+						set {_kitsave} to arg-2
+						#send "test"
+						loop 9 time:
+							if {_isboolean} = "false":
+								if {_count} = {_kitsave}:
+									if {kitcreate::savekit::%player%::%{_count}%} = 0:
+										#send "test"
+										add all items in player's inventory to {kitcreate::kit%{_count}%::inv::%player%::*}
+										set {kitcreate.kit%{_count}%.helm.%player%} to player's helmet
+										set {kitcreate.kit%{_count}%.chest.%player%} to player's chestplate
+										set {kitcreate.kit%{_count}%.legs.%player%} to player's legging
+										set {kitcreate.kit%{_count}%.boots.%player%} to player's boots
+										set {kitcreate.kit%{_count}%.off.%player%} to player's offhand
+										set {kitcreate::savekit::%player%::%{_count}%} to 1
+										
+										set {_isboolean} to "true"
+										send "{@prefix}カスタムkit[%{_count}%]を作成しました"
+							add 1 to {_count}
+						if {_isboolean} = "false":
+							send "{@prefix}これ以上kitを保存できません"
+						clear player's inventory
+						close player's inventory
+						make player execute command "/kitedit multikitsave"
+				if {kitedit_temp_%player%_count} is set:
+					clear {kitedit_temp_%player%_count}
+			else if arg-1 is "load":
+				execute console command "clear %player%"
+				set player's inventory to {kitcreate::inv::%player%::*}
+				set player's helmet to {kitcreate.helm.%player%}
+				set player's chestplate to {kitcreate.chest.%player%}
+				set player's legging to {kitcreate.legs.%player%}
+				set player's boots to {kitcreate.boots.%player%}
+				set player's offhand to {kitcreate.off.%player%}
+				send "{@prefix}インベントリをロードしました"
+				close player's inventory
+			else if arg-1 is "multiload":
+				if arg-2 is set:
+					set {_isboolean} to "false"
+					set {_count} to 1
+					set {_kitload} to arg-2
+					loop 9 time:
+						if {_isboolean} = "false":
+							if {_count} = {_kitload}:
+								if {kitcreate::savekit::%player%::%{_count}%} = 1:
+									set player's inventory to {kitcreate::kit%{_count}%::inv::%player%::*}
+									set player's helmet to {kitcreate.kit%{_count}%.helm.%player%}
+									set player's chestplate to {kitcreate.kit%{_count}%.chest.%player%}
+									set player's legging to {kitcreate.kit%{_count}%.legs.%player%}
+									set player's boots to {kitcreate.kit%{_count}%.boots.%player%}
+									set player's offhand to {kitcreate.kit%{_count}%.off.%player%}
+
+									set {_isboolean} to "true"
+									send "{@prefix}カスタムkit[%{_count}%]をロードしました"
+						add 1 to {_count}
+					if {_isboolean} = "false":
+						send "{@prefix}見つかりませんでした"
+				else:
+					execute console command "clear %player%"
+					set player's inventory to {kitcreate::kit1::inv::%player%::*}
+					set player's helmet to {kitcreate.kit1.helm.%player%}
+					set player's chestplate to {kitcreate.kit1.chest.%player%}
+					set player's legging to {kitcreate.kit1.legs.%player%}
+					set player's boots to {kitcreate.kit1.boots.%player%}
+					set player's offhand to {kitcreate.kit1.off.%player%}
+					send "{@prefix}インベントリをロードしました"
+				close player's inventory
+			else if arg-1 is "clear":
+				if arg-2 is set:
+					if {kitcreate.kit.%player%} = 2:
+						set {_isboolean} to "false"
+						set {_count} to 1
+						set {_kitdelete} to arg-2
+						loop 9 time:
+							if {_isboolean} = "false":
+								if {_count} = {_kitdelete}:
+									if {kitcreate::savekit::%player%::%{_count}%} = 1:
+										clear {kitcreate.kit%{_count}%.helm.%player%}
+										clear {kitcreate.kit%{_count}%.chest.%player%}
+										clear {kitcreate.kit%{_count}%.legs.%player%}
+										clear {kitcreate.kit%{_count}%.boots.%player%}
+										clear {kitcreate.kit%{_count}%.off.%player%}
+										clear {kitcreate::kit%{_count}%::inv::%player%::*}
+
+										set {kitcreate::savekit::%player%::%{_count}%} to 0
+										set {_isboolean} to "true"
+										send "{@prefix}カスタムkit[%{_count}%]を削除しました"
+							add 1 to {_count}
+						if {_isboolean} = "false":
+							send "{@prefix}見つかりませんでした"
+						close player's inventory
+						make player execute command "/kitedit multikitsave"
+						if {kitedit_temp_%player%_count} is set:
+							clear {kitedit_temp_%player%_count}
+						stop
+				else:
+					send "削除できません"
+					stop
+				set {_clear} to 0
+				if {_clear} = 0:
+					send "削除できません"
+					stop
+				clear {kitcreate.helm.%player%}
+				clear {kitcreate.chest.%player%}
+				clear {kitcreate.legs.%player%}
+				clear {kitcreate.boots.%player%}
+				clear {kitcreate.off.%player%}
+				clear {kitcreate::inv::%player%::*}
+				clear {kitcreate.kit.%player%}
+				send "{@prefix}変数を消去しました"
+		else:
+			send "{@prefix}コマンドが間違っています"

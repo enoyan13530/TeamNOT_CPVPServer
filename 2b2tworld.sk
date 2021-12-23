@@ -1,0 +1,211 @@
+options:
+    prefix: &8[&1&l2b2tworld&r&8]&r
+
+    gui_noteblock_name: &8[&1&lNoteblock&r&8]&r
+
+    gui_noteblock_item: note block
+
+    gui_obsidian_name: &8[&1&lObsidian&r&8]&r
+
+    gui_obsidian_item: obsidian
+
+    gui_anvil_item: anvil
+
+    gui_wither_name: &8[&1&lWither&r&8]&r
+
+    gui_witherhead_item: wither skeleton skull
+
+    gui_lavacast_name: &8[&1&lLavacast&r&8]&r
+
+    gui_lava_item: lava bucket
+
+    gui_name_noteblock: &r&lNoteBlock
+
+    gui_name_obsidian: &r&lObsidian
+
+    gui_name_witherhead: &r&lWither
+
+    gui_name_lavacast: &r&lLavacast
+
+command /enderchest [<text>]:
+    trigger:
+        if arg-1 is not set:
+            open chest inventory with 1 rows named "{@prefix}" to player
+            set slot 0 of player's current inventory to {@gui_noteblock_item} named "{@gui_name_noteblock}"
+            set slot 1 of player's current inventory to {@gui_obsidian_item} named "{@gui_name_obsidian}"
+            set slot 2 of player's current inventory to {@gui_witherhead_item} named "{@gui_name_witherhead}"
+            set slot 3 of player's current inventory to {@gui_lava_item} named "{@gui_name_lavacast}"
+        else:
+            if arg-1 is "noteblock":
+                open chest inventory with 6 rows named "{@gui_noteblock_name}" to player
+                set {_count} to 0
+                loop 27 time:
+                    set slot {_count} of player's current inventory to 64 note block
+                    add 1 to {_count}
+                loop 5 time:
+                    set slot {_count} of player's current inventory to 64 oak planks
+                    add 1 to {_count}
+                loop 4 time:
+                    set slot {_count} of player's current inventory to 64 stone
+                    add 1 to {_count}
+                loop 5 time:
+                    set slot {_count} of player's current inventory to 64 sand
+                    add 1 to {_count}
+                loop 4 time:
+                    set slot {_count} of player's current inventory to 64 glass
+                    add 1 to {_count}
+                set slot 45 of player's current inventory to {@gui_anvil_item} named "&r&l再設置"
+                set slot 53 of player's current inventory to {@gui_anvil_item} named "&r&l戻る"
+            else if arg-1 is "obsidian":
+                open chest inventory with 6 rows named "{@gui_obsidian_name}" to player
+                set {_count} to 0
+                loop 45 time:
+                    set slot {_count} of player's current inventory to 64 obsidian
+                    add 1 to {_count}
+                set slot 45 of player's current inventory to {@gui_anvil_item} named "&r&l再設置"
+                set slot 53 of player's current inventory to {@gui_anvil_item} named "&r&l戻る"
+            else if arg-1 is "wither":
+                open chest inventory with 6 rows named "{@gui_wither_name}" to player
+                set {_count} to 0
+                loop 18 time:
+                    set slot {_count} of player's current inventory to 64 {@gui_witherhead_item}
+                    add 1 to {_count}
+                loop 18 time:
+                    set slot {_count} of player's current inventory to 64 soul sand
+                    add 1 to {_count}
+                loop 5 time:
+                    set slot {_count} of player's current inventory to 64 anvil
+                    add 1 to {_count}
+                loop 4 time:
+                    set slot {_count} of player's current inventory to 64 name tag
+                    add 1 to {_count}
+                set slot 45 of player's current inventory to {@gui_anvil_item} named "&r&l再設置"
+                set slot 53 of player's current inventory to {@gui_anvil_item} named "&r&l戻る"
+            else if arg-1 is "lavacast":
+                open chest inventory with 6 rows named "{@gui_lavacast_name}" to player
+                set {_count} to 0
+                loop 18 time:
+                    set slot {_count} of player's current inventory to water bucket
+                    add 1 to {_count}
+                loop 18 time:
+                    set slot {_count} of player's current inventory to lava bucket
+                    add 1 to {_count}
+                loop 9 time:
+                    set slot {_count} of player's current inventory to 64 cobblestone
+                    add 1 to {_count}
+                set slot 45 of player's current inventory to {@gui_anvil_item} named "&r&l再設置"
+                set slot 53 of player's current inventory to {@gui_anvil_item} named "&r&l戻る"
+
+
+on inventory click:
+	if name of clicked inventory is "{@prefix}":
+		if event-item is {@gui_noteblock_item} named "{@gui_name_noteblock}":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest noteblock"
+		else if event-item is {@gui_obsidian_item} named "{@gui_name_obsidian}":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest obsidian"
+		else if event-item is {@gui_witherhead_item} named "{@gui_name_witherhead}":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest wither"
+		else if event-item is {@gui_lava_item} named "{@gui_name_lavacast}":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest lavacast"
+		else:
+			cancel event
+
+	else if name of clicked inventory is "{@gui_noteblock_name}":
+		if event-item is {@gui_anvil_item} named "&r&l再設置":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest noteblock"
+		else if event-item is {@gui_anvil_item} named "&r&l戻る":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest"
+	else if name of clicked inventory is "{@gui_obsidian_name}":
+		if event-item is {@gui_anvil_item} named "&r&l再設置":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest obsidian"
+		else if event-item is {@gui_anvil_item} named "&r&l戻る":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest"
+	else if name of clicked inventory is "{@gui_wither_name}":
+		if event-item is {@gui_anvil_item} named "&r&l再設置":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest wither"
+		else if event-item is {@gui_anvil_item} named "&r&l戻る":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest"
+	else if name of clicked inventory is "{@gui_lavacast_name}":
+		if event-item is {@gui_anvil_item} named "&r&l再設置":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest lavacast"
+		else if event-item is {@gui_anvil_item} named "&r&l戻る":
+			close player's inventory
+			wait 1 tick
+			make player execute command "/enderchest"
+
+on command "/enderchest":
+    if player is not in world "2b2t" or "2b2tjp_nether00":
+        if {privateworld.world.%player%} != 1:
+            cancel event
+            send "{@prefix}このコマンドは2b2tワールドのみ実行可能です"
+
+on rightclick on sign:
+	#if line 1 of clicked block is "[cpvp]":
+		#set line 1 of clicked block to "&8[&3&lCPVP&r&8]&f"
+	if line 1 of clicked block is "[cpvp]":
+		if line 3 of clicked block is "goto nether00":
+			execute console command "mvtp %player% 2b2tjp_nether00"
+		else if line 3 of clicked block is "goto 00":
+			execute console command "mvtp %player% 2b2t"
+		else if line 3 of clicked block is "back to lobby":
+			execute console command "mvtp %player% world"
+
+on place:
+    #stop
+    set {_x} to x-coord of block
+    set {_y} to y-coord of block
+    set {_z} to z-coord of block
+    set {_world} to the world of player
+
+    if {_world} != "2b2tjp_nether00":
+        stop
+    {_x} >= -3
+    {_x} <= 3
+    {_z} >= -3
+    {_z} <= 3
+    cancel event
+    send "{@prefix}スポーン付近の設置はできません"
+
+on break:
+    #stop
+    set {_x} to x-coord of block
+    set {_y} to y-coord of block
+    set {_z} to z-coord of block
+    set {_world} to the world of player
+
+    if {_world} != "2b2tjp_nether00":
+        stop
+    {_x} >= -3
+    {_x} <= 3
+    {_z} >= -3
+    {_z} <= 3
+    cancel event
+    send "{@prefix}スポーン付近の破壊はできません"
+
+on right click on ender chest:
+    if player is in world "2b2t" or "2b2tjp_nether00":
+        execute console command "playsound minecraft:block.enderchest.open block %player% ~ ~ ~ 100 1 1"
+        make player execute command "/enderchest"
+        #send "{@prefix}open ender chest menu"

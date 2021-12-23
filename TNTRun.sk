@@ -1,0 +1,106 @@
+options:
+    prefix: &f[&c&lTNT_RUN&r&f]&r
+
+command /tntrun [<text>]:
+    trigger:
+        if arg-1 is set:
+            if arg-1 is "join":
+                if {tntrun.game} = "start":
+                    send "{@prefix}ゲームがすでに開始している為さんかできません"
+                    stop
+                if {tntrun.%player%.game} = 1:
+                    send "{@prefix}すでに参加しています"
+                else:
+                    teleport player to {tntrun.gamelobby}
+                    set {tntrun.%player%.game} to 1
+                    add 1 to {tntrun.playernum}
+                    send "{@prefix}参加しました"
+            else if arg-1 is "leave":
+                if {tntrun.%player%.game} = 1:
+                    teleport player to {cpvplobby}
+                    clear {tntrun.%player%.game}
+                    add -1 to {tntrun.playernum}
+                    send "{@prefix}退室しました"
+                else:
+                    send "{@prefix}すでに退室しています"
+            else if arg-1 is "start":
+                if {tntrun.game} = "start":
+                    send "{@prefix}ゲームがすでに開始しています"
+                    stop
+                broadcast "{@prefix}まもなく開始します" in world "tntrun"
+                wait 5 second
+                set {_count} to 5
+                loop 5 time:
+                    broadcast "{@prefix}残り&l%{_count}%&r秒で開始します" in world "tntrun"
+                    add -1 to {_count}
+                    wait 1 second
+                set {tntrun.game} to "start"
+                broadcast "{@prefix}ゲームを開始しました" in world "tntrun"
+            else if arg-1 is "stop":
+                set {tntrun.game} to "stop"
+                set {tntrun.playernum} to 0
+                loop all players:
+                    if {tntrun.%player%.game} = 1:
+                        make loop-player execute command "/tntrun leave"
+                execute console command "tntrunsetting resetgame"
+                send "{@prefix}ゲームを停止しました"
+            else:
+                send "{@prefix}コマンドが間違っています"
+        else:
+            send "{@prefix}入力してください"
+
+every 1 tick in world "tntrun":
+    if {tntrun.playernum} >= 2:
+        execute command "tntrun start"
+
+every 4 tick in world "tntrun":
+    if {tntrun.game} = "start":
+        entity is player
+        set {_p} to entity
+        set {_x} to {_p}'s x-coord
+        set {_y} to {_p}'s y-coord
+        set {_z} to {_p}'s z-coord
+        if {_y} <= 22:
+            #if block at location at ({_x}, {_y}, {_z}) in world "tntrun" is air:
+            execute console command "tntrun stop"
+            make {_p} execute command "/tntrun leave"
+
+
+on walk on tnt:
+	if {tntrun.game} is "start":
+		wait 0.18 seconds
+		set event-block to air
+
+command /tntrunsetting [<text>]:
+    trigger:
+        if arg-1 is set:
+            if arg-1 is "waitlobby":
+                set {tntrun.waitlobby} to location of player
+                send "{@prefix}&3%location%&fにTNTRUNの待機ロビーをセットしました" to player
+            if arg-1 is "lobby":
+                set {tntrun.lobby} to location of player
+                send "{@prefix}&3%location%&fにTNTRUNのロビーをセットしました" to player
+            if arg-1 is "game":
+                set {tntrun.gamelobby} to location of player
+                send "{@prefix}&3%location%&fにTNTRUNのゲームロビーをセットしました" to player
+            if arg-1 is "resetgame":
+                set {_x1} to -29.5
+                set {_xx1} to {_x1}
+                set {_y} to 23
+                set {_z1} to 89.5
+                set {_x-1} to 9.5
+                set {_z2} to 51.5
+
+                set {_count} to 0
+
+                while {_z1} >= {_z2}:
+                    if block at location at ({_x1}, {_y}, {_z1}) in world "tntrun" is air:
+                        set block at location at ({_x1}, {_y}, {_z1}) in world "tntrun" to tnt
+                    if {_x1} = {_x-1}:
+                        set {_x1} to {_xx1}
+                        set {_z1} to {_z1} - 1
+                        add -1 to {_x1}
+                    add 1 to {_x1}
+                    add 1 to {_count}
+                    #wait 0.1 tick
+                send "{@prefix}完了"

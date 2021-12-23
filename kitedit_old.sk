@@ -1,0 +1,271 @@
+options:
+	prefix:&8[&l&1Oldkiteditold&r&8]&f
+	
+	kit_editor:&8[&l&1kiteditoldor&r&8]&f
+
+	kit_saveconfirm:&8[&l&1save kit&r&8]&f
+
+	kit_multisave:&r&lSave Kit
+	
+	kit_editor_back:&rBack
+	
+	kit_editor_replace:&rRelpace Item
+	
+	kit_editor_crystal:&r&lCrystal
+	
+	kit_editor_gapple:&r&lFood
+	
+	kit_editor_totem:&r&lTotem & Anvil
+	
+	kit_editor_bottle:&r&lXPBottle & potion
+	
+	kit_editor_piston:&r&lPiston
+	
+	kit_editor_armor:&r&lArmor
+	
+	gui_kit_list:&r&lKit list
+
+	gui_kit_edit:&rEdit Kit
+	
+	gui_kit_get:&r&lGet Kit
+
+	gui_kit_save:&r&lSave Kit
+
+	gui_kit_old_load:&r&lLoad Old Kit
+
+	gui_kit_load:&r&lLoad Kit
+
+command /kiteditold [<text>] [<text>]:
+	trigger:
+		if arg-1 is set:
+			if arg-1 is "editor":
+				if arg-2 is set:
+					if arg-2 is "crystal":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 4 rows named "{@kit_editor_crystal}" to player
+						set {_count} to 0
+						loop 18 time:
+							set slot {_count} of player's current inventory to 64 end crystal
+							add 1 to {_count}
+						loop 6 time:
+							set slot {_count} of player's current inventory to 64 obsidian
+							add 1 to {_count}
+						loop 3 time:
+							set slot {_count} of player's current inventory to 64 ender chest
+							add 1 to {_count}
+						set slot 27 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 35 of player's current inventory to anvil named "{@kit_editor_back}"
+					if arg-2 is "gapple":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 4 rows named "{@kit_editor_gapple}" to player
+						set {_count} to 0
+						loop 18 time:
+							set slot {_count} of player's current inventory to 64 enchanted golden apple
+							add 1 to {_count}
+						loop 9 time:
+							set slot {_count} of player's current inventory to 64 chorus fruit
+							add 1 to {_count}
+						set slot 27 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 35 of player's current inventory to anvil named "{@kit_editor_back}"
+					if arg-2 is "totem":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 4 rows named "{@kit_editor_totem}" to player
+						set {_count} to 0
+						loop 18 time:
+							set slot {_count} of player's current inventory to totem of undying
+							add 1 to {_count}
+						loop 9 time:
+							set slot {_count} of player's current inventory to 64 anvil
+							add 1 to {_count}
+						set slot 27 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 35 of player's current inventory to anvil named "{@kit_editor_back}"
+					if arg-2 is "bottle":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 4 rows named "{@kit_editor_bottle}" to player
+						set {_count} to 0
+						loop 18 time:
+							set slot {_count} of player's current inventory to 64 experience bottle
+							add 1 to {_count}
+						loop 9 time:
+							#format slot {_count} of player's current inventory to potion of strength named "&r&l力のポーション2" to run [make console command "give %player% minecraft:potion 1 0"]
+							format slot {_count} of player with potion of strength named "&r&l力のポーション2" to run [make player execute command "give %player% minecraft:potion 1 0 {Potion:""minecraft:strong_strength""}"]
+							#set slop {_count} of player's current inventory to potion of strong strength
+							add 1 to {_count}
+						set slot 27 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 35 of player's current inventory to anvil named "{@kit_editor_back}"
+					if arg-2 is "piston":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 4 rows named "{@kit_editor_piston}" to player
+						set {_count} to 0
+						loop 9 time:
+							set slot {_count} of player's current inventory to 64 piston
+							add 1 to {_count}
+						loop 9 time:
+							set slot {_count} of player's current inventory to 64 redstone torch
+							add 1 to {_count}
+						loop 9 time:
+							set slot {_count} of player's current inventory to 64 redstone block
+							add 1 to {_count}
+						set slot 27 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 35 of player's current inventory to anvil named "{@kit_editor_back}"
+					if arg-2 is "armor":
+						close player's inventory
+						wait 0.1 second
+						open chest inventory with 5 rows named "{@kit_editor_armor}" to player
+						set {_count} to 0
+						loop 7 time:
+							set slot {_count} of player's current inventory to diamond helmet of protection 4 and respiration 3 and aqua affinity 1 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 2 time:
+							set slot {_count} of player's current inventory to diamond helmet of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 7 time:
+							set slot {_count} of player's current inventory to diamond chestplate of blast protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 2 time:
+							set slot {_count} of player's current inventory to diamond chestplate of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 7 time:
+							set slot {_count} of player's current inventory to diamond leggings of protection 4 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 2 time:
+							set slot {_count} of player's current inventory to diamond leggings of protection 4 and fire protection 4 and blast protection 4 and projectile protection 4 and respiration 3 and aqua affinity 1 and thorns 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 7 time:
+							set slot {_count} of player's current inventory to diamond boots of protection 4 and feather falling 4 and depth strider 3 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						loop 2 time:
+							set slot {_count} of player's current inventory to diamond boots of protection 4 and fire protection 4 and feather falling 4 and blast protection 4 and projectile protection 4 and thorns 3 and depth strider 3 and frost walker 2 and unbreaking 3 and mending 1 and curse of vanishing 1
+							add 1 to {_count}
+						set slot 36 of player's current inventory to anvil named "{@kit_editor_replace}"
+						set slot 44 of player's current inventory to anvil named "{@kit_editor_back}"
+				else:
+					close player's inventory
+					wait 0.1 second
+					open chest inventory with 1 rows named "{@kit_editor}" to player
+					set slot 0 of player's current inventory to end crystal named "{@kit_editor_crystal}"
+					set slot 1 of player's current inventory to enchanted golden apple named "{@kit_editor_gapple}"
+					set slot 2 of player's current inventory to totem of undying named "{@kit_editor_totem}"
+					set slot 3 of player's current inventory to experience bottle named "{@kit_editor_bottle}"
+					set slot 4 of player's current inventory to redstone block named "{@kit_editor_piston}"
+					set slot 5 of player's current inventory to diamond helmet named "{@kit_editor_armor}"
+					set slot 8 of player's current inventory to anvil named "{@kit_editor_back}"
+
+		else:
+			close player's inventory
+			wait 0.1 second
+			open chest inventory with 1 rows named "{@prefix}" to player
+			set slot 4 of player's current inventory to anvil named "{@gui_kit_edit}"			
+
+on inventory click:
+	if name of clicked inventory is "{@prefix}":
+		if event-item is diamond sword named "{@gui_kit_get}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kit"
+		else if event-item is anvil named "{@gui_kit_edit}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		else if event-item is diamond sword named "{@gui_kit_save}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold multikitsave"
+		else if event-item is anvil named "{@kit_multisave}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold multikitsave"
+		else:
+			cancel event
+			
+	if name of clicked inventory is "{@kit_editor}":
+		if event-item is end crystal named "{@kit_editor_crystal}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor crystal"
+		if event-item is enchanted golden apple named "{@kit_editor_gapple}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor gapple"
+		if event-item is totem of undying named "{@kit_editor_totem}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor totem"
+		if event-item is experience bottle named "{@kit_editor_bottle}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor bottle"
+		if event-item is redstone block named "{@kit_editor_piston}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor piston"
+		if event-item is diamond helmet named "{@kit_editor_armor}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor armor"
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold"
+		else:
+			cancel event
+			
+	if name of clicked inventory is "{@kit_editor_crystal}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor crystal"
+	if name of clicked inventory is "{@kit_editor_gapple}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor gapple"
+	if name of clicked inventory is "{@kit_editor_totem}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor totem"
+	if name of clicked inventory is "{@kit_editor_bottle}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor bottle"
+	if name of clicked inventory is "{@kit_editor_piston}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor piston"
+	if name of clicked inventory is "{@kit_editor_armor}":
+		if event-item is anvil named "{@kit_editor_back}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor"
+		if event-item is anvil named "{@kit_editor_replace}":
+			close player's inventory
+			wait 0.1 second
+			make player execute command "kiteditold editor armor"
