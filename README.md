@@ -1,2 +1,2 @@
-# なんちゃってCPVP鯖で使用しているskファイル
-鯖で使用しているskファイルです
+# TeamNOT CPVP-Server
+- CPVP鯖で使用していたSkriptファイルです
